@@ -1,6 +1,5 @@
 library hudle_slot_view;
 
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hudle_core/hudle_core.dart';
@@ -38,21 +37,69 @@ class SlotsView extends StatelessWidget {
 
     final controller = SlotViewController(data);
     Get.put(controller);
+if(data.isEmpty)
+  {
+    return Container(
+      child: const Center(
+        child: Text("NO DATA"),
+      )
+    );
+  }
 
-    return Swipable(
-      onLeftSwipe: listener.onNextClick,
-      onRightSwipe: listener.onPreviousClick,
-      child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Container(
-              color: Color(0xffF5F5F5),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  LegendView(),
-                  Row(
+    return Container(
+      child: Swipable(
+        onRightSwipe: listener.onPreviousClick,
+        onLeftSwipe: listener.onNextClick,
+        child: Container(
+          color: Color(0xffF5F5F5),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              LegendView(),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: data.map((slotData) {
+                  final mainIndex = data.indexOf(slotData);
+                  final width = (MediaQuery.of(context).size.width/controller.slotDataLength).ceil().toDouble()-24;
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (mainIndex == 0) SizedBox(
+                       width: 40,
+                      ),
+                      Container(
+                        //color: Colors.red,
+                       margin: const EdgeInsets.only(left: 8),
+                        width: width,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              VerticalGap(),
+                              DateItem(
+                                day: convertFormat(
+                                    time: slotData.date,
+                                    newFormat: 'EEE',
+                                    oldFormat: API_DATE_FORMAT),
+                                date: convertFormat(
+                                    time: slotData.date,
+                                    newFormat: 'dd',
+                                    oldFormat: API_DATE_FORMAT),
+                                onDateTap: () {
+                                  controller.setSelections(slotData.slots,slotData.date);
+                                  listener.onSlotSelected2(controller.getAllSlots());
+                                },
+                              ),
+                              VerticalGap(),
+                            ]),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: data.map((slotData) {
                       final mainIndex = data.indexOf(slotData);
@@ -62,10 +109,10 @@ class SlotsView extends StatelessWidget {
                           if (mainIndex == 0) Column(
                             children: [
                               VerticalGap(gap: 12,),
-                              DateItem(
-                                  day: '',
-                                  date: ''
-                              ),
+                              // DateItem(
+                              //     day: '',
+                              //     date: ''
+                              // ),
                               VerticalGap(gap: 12,),
                               timeColumn(slotData),
                             ],
@@ -74,21 +121,23 @@ class SlotsView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 VerticalGap(gap: 12,),
-                                DateItem(
-                                  day: convertFormat(
-                                      time: slotData.date,
-                                      newFormat: 'EEE',
-                                      oldFormat: API_DATE_FORMAT),
-                                  date: convertFormat(
-                                      time: slotData.date,
-                                      newFormat: 'dd',
-                                      oldFormat: API_DATE_FORMAT),
-                                  onDateTap: () {
-                                    controller.setSelections(slotData.slots,slotData.date);
-                                    listener.onSlotSelected2(controller.getAllSlots());
-                                  },
-                                ), VerticalGap(gap: 12,),
+                                // DateItem(
+                                //   day: convertFormat(
+                                //       time: slotData.date,
+                                //       newFormat: 'EEE',
+                                //       oldFormat: API_DATE_FORMAT),
+                                //   date: convertFormat(
+                                //       time: slotData.date,
+                                //       newFormat: 'dd',
+                                //       oldFormat: API_DATE_FORMAT),
+                                //   onDateTap: () {
+                                //     controller.setSelections(slotData.slots,slotData.date);
+                                //     listener.onSlotSelected2(controller.getAllSlots());
+                                //   },
+                                // ),
+                                VerticalGap(gap: 12,),
                                 Column(
+
                                   children: slotData.slots.map((slot) {
                                     return Obx(
                                           () => Padding(
@@ -112,9 +161,9 @@ class SlotsView extends StatelessWidget {
                       );
                     }).toList(),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),

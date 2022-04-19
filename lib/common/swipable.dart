@@ -19,12 +19,14 @@ class Swipable extends StatelessWidget {
           if(direction == RIGHT){
             //HapticFeedback.lightImpact();
             onRightSwipe();
-
+            print("Move to right ");
           }
 
           if(direction == LEFT){
             //HapticFeedback.lightImpact();
             onLeftSwipe();
+            print("Move to left ");
+
           }
 
       },
