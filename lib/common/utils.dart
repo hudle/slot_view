@@ -3,12 +3,17 @@ const RS = "₹";
 
 String getDisplayNumber(dynamic number,{required bool isBooking, bool showSymbol=true,bool compact=true}){
 
-  if(isBooking)
-  {
-    return formatBookingNumber(number,compact: compact);
-  }
-  else
-    return formatPrice(number,compact: compact,showSymbol: showSymbol);
+ try {
+   if(isBooking)
+   {
+     return formatBookingNumber(number,compact: compact);
+   }
+   else
+     return formatPrice(number,compact: compact,showSymbol: showSymbol);
+ }
+ catch(e) {
+   return "N/A";
+ }
 
 }
 

@@ -11,6 +11,7 @@ const API_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 const DISPLAY_DATE = "dd MMM, yyyy";
 const DISPLAY_TIME = "hh:mm a";
+const SLOT_TIMING = "hh:mm:ss";
 
 String displayDate(DateTime dateTime, String format) {
   return DateFormat(format).format(dateTime);

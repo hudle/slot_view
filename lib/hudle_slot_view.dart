@@ -29,7 +29,7 @@ class SlotsView extends StatelessWidget {
     // response = BaseResponse.fromJson(jsonDecode(slotData));
     // data = response.data!.slotData;
     //TODO : Remove print
-    print("SLOT LIST: ${data.length}");
+   // print("SLOT LIST: ${data.length}");
   }
 
   @override
@@ -40,7 +40,7 @@ class SlotsView extends StatelessWidget {
 if(data.isEmpty)
   {
     return Container(
-      child: const Center(
+      child: Center(
         child: Text("NO DATA"),
       )
     );
@@ -332,7 +332,7 @@ class TimeItem extends StatelessWidget {
       height: MAX_BOX_SIZE,
       width: 40,
       //color: kColorError,
-      margin: const EdgeInsets.only(right: 8, bottom: 2, top: 2),
+      margin: const EdgeInsets.only(right: 8, bottom: 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -41,11 +41,13 @@ Map<String, dynamic> _$SlotToJson(Slot instance) => <String, dynamic>{
     };
 
 SlotGrid _$SlotGridFromJson(Map<String, dynamic> json) {
+  print('INSide JSON : $json');
+  print(json['slot_data']);
   return SlotGrid(
-    (json['slot_data'] as List<dynamic>)
+    (json['data']['slot_data'] as List<dynamic>)
         .map((e) => SlotData.fromJson(e as Map<String, dynamic>))
         .toList(),
-    (json['slot_timings'] as List<dynamic>)
+    (json['data']['slot_timings'] as List<dynamic>)
         .map((e) => SlotTiming.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
