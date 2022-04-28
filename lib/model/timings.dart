@@ -1,4 +1,1 @@
-
-class Timings {
-  
-}
+class Timings {}

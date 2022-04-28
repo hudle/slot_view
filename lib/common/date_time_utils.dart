@@ -1,6 +1,7 @@
-
+// Dart imports:
 import 'dart:developer';
 
+// Package imports:
 import 'package:intl/intl.dart';
 
 const REPORT_DISPLAY_DATE = "MMMM, yyyy";
@@ -18,11 +19,13 @@ String displayDate(DateTime dateTime, String format) {
 }
 
 String displayDateWithString(String dateTime) {
-  return convertFormat(time: dateTime, newFormat: DISPLAY_DATE, oldFormat: API_FORMAT);
+  return convertFormat(
+      time: dateTime, newFormat: DISPLAY_DATE, oldFormat: API_FORMAT);
 }
 
 String displayTimeWithString(String dateTime) {
-  return convertFormat(time: dateTime, newFormat: DISPLAY_TIME, oldFormat: API_FORMAT);
+  return convertFormat(
+      time: dateTime, newFormat: DISPLAY_TIME, oldFormat: API_FORMAT);
 }
 
 String displayDateWithDateTime(DateTime dateTime) {
@@ -42,16 +45,16 @@ String displayDateStr(String dateTime, String format) {
 }
 
 String displayTime(String? time) {
-
-  if(time == null) {
+  if (time == null) {
     return "N/a";
   }
   return convertFormat(time: time, newFormat: "hh:mm a", oldFormat: "HH:mm:ss");
 }
 
-
-String convertFormat({required String time, required String newFormat, required String oldFormat})  {
-
+String convertFormat(
+    {required String time,
+    required String newFormat,
+    required String oldFormat}) {
   if (time.isEmpty) return time;
 
   final input = DateFormat(oldFormat).parse(time);
@@ -62,15 +65,19 @@ String convertFormat({required String time, required String newFormat, required 
 String displayStartAndEndTime(String? startTime, String? endTime) {
   final start = displayTime(startTime);
   final end = displayTime(endTime);
-  return startTime == null && endTime == null ? "N/A" : start == end ? "24x7" : "$start to $end" ;
+  return startTime == null && endTime == null
+      ? "N/A"
+      : start == end
+          ? "24x7"
+          : "$start to $end";
 }
 
 String dobDisplay(String date) {
   log("Convert Date format: $date");
   try {
-    return convertFormat(time: date, newFormat: DISPLAY_DATE, oldFormat: API_DATE_FORMAT);
-  }
-  catch (e) {
+    return convertFormat(
+        time: date, newFormat: DISPLAY_DATE, oldFormat: API_DATE_FORMAT);
+  } catch (e) {
     return "--";
   }
 }
