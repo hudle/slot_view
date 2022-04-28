@@ -1,20 +1,18 @@
+// Package imports:
 import 'package:intl/intl.dart';
+
 const RS = "₹";
 
-String getDisplayNumber(dynamic number,{required bool isBooking, bool showSymbol=true,bool compact=true}){
-
- try {
-   if(isBooking)
-   {
-     return formatBookingNumber(number,compact: compact);
-   }
-   else
-     return formatPrice(number,compact: compact,showSymbol: showSymbol);
- }
- catch(e) {
-   return "N/A";
- }
-
+String getDisplayNumber(dynamic number,
+    {required bool isBooking, bool showSymbol = true, bool compact = true}) {
+  try {
+    if (isBooking) {
+      return formatBookingNumber(number, compact: compact);
+    } else
+      return formatPrice(number, compact: compact, showSymbol: showSymbol);
+  } catch (e) {
+    return "N/A";
+  }
 }
 
 String formatPrice(dynamic price,
@@ -34,7 +32,6 @@ String formatPrice(dynamic price,
     return "$RS $price";
   }
 }
-
 
 String formatBookingNumber(dynamic number, {bool compact = true}) {
   print(number);

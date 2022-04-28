@@ -1,6 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:hudle_core/hudle_core.dart';
 import 'package:hudle_theme/hudle_theme.dart';
+
 class TimeItem extends StatelessWidget {
   final String startTime;
   final String endTime;
@@ -8,15 +12,15 @@ class TimeItem extends StatelessWidget {
 
   const TimeItem(
       {Key? key,
-        this.startTime = "12:00 AM",
-        this.endTime = "01:00 AM",
-        this.showEndTime = true})
+      this.startTime = "12:00 AM",
+      this.endTime = "01:00 AM",
+      this.showEndTime = true})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 8,right: 2),
+      padding: const EdgeInsets.only(left: 8, right: 2),
       height: 70,
       width: 40,
       //color: kColorError,

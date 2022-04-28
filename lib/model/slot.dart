@@ -1,8 +1,11 @@
+// Package imports:
 import 'package:json_annotation/json_annotation.dart';
 
+// Project imports:
 import '../common/date_time_utils.dart';
 
 part 'slot.g.dart';
+
 @Deprecated("Use Slot Model for Grid view")
 @JsonSerializable()
 class Slot {
@@ -35,48 +38,45 @@ class Slot {
   @JsonKey(name: "facility_name")
   final String? facilityName;
 
-
   Slot(
-      this.availableCount,
-     // this.bookings,
-      this.createdAt,
-      this.endTime,
-      this.facilityId,
-      this.id,
-      this.isAvailable,
-      this.price,
-      this.basePrice,
-      this.startTime,
-      this.updatedAt,
-      this.totalCount,
-      this.isBooked,
-      this.facilityName,);
-
+    this.availableCount,
+    // this.bookings,
+    this.createdAt,
+    this.endTime,
+    this.facilityId,
+    this.id,
+    this.isAvailable,
+    this.price,
+    this.basePrice,
+    this.startTime,
+    this.updatedAt,
+    this.totalCount,
+    this.isBooked,
+    this.facilityName,
+  );
 
   factory Slot.fromJson(Map<String, dynamic> json) => _$SlotFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlotToJson(this);
 
-  SlotStatus get slotStatus  {
-    if (isAvailable == true && (availableCount ?? 0) > 0 && minusLeft(endTime) >= 0 ) {
+  SlotStatus get slotStatus {
+    if (isAvailable == true &&
+        (availableCount ?? 0) > 0 &&
+        minusLeft(endTime) >= 0) {
       return SlotStatus.AVAILABLE;
-    }
-    else if (isAvailable == true && (availableCount ?? 0) <= 0) {
+    } else if (isAvailable == true && (availableCount ?? 0) <= 0) {
       return SlotStatus.BOOKED;
-    }
-    else return SlotStatus.NOT_AVAILABLE;
+    } else
+      return SlotStatus.NOT_AVAILABLE;
   }
 }
 
-
-
 @JsonSerializable()
 class SlotGrid {
-
-  @JsonKey(name : 'slot_data')
+  @JsonKey(name: 'slot_data')
   final List<SlotData> slotData;
 
-  @JsonKey(name : 'slot_timings')
+  @JsonKey(name: 'slot_timings')
   final List<SlotTiming> slotTimings;
 
   SlotGrid(this.slotData, this.slotTimings);
@@ -87,22 +87,20 @@ class SlotGrid {
   Map<String, dynamic> toJson() => toMap(this); //_$SlotGridToJson(this);
 
   Map<String, dynamic> toMap(SlotGrid instance) => <String, dynamic>{
-    'slot_data': instance.slotData.map((e) => e.toJson()).toList(),
-    'slot_timings': instance.slotTimings.map((e) => e.toJson()).toList(),
-  };
-
+        'slot_data': instance.slotData.map((e) => e.toJson()).toList(),
+        'slot_timings': instance.slotTimings.map((e) => e.toJson()).toList(),
+      };
 }
 
 @JsonSerializable()
 class SlotData {
-
-  @JsonKey(name : 'date')
+  @JsonKey(name: 'date')
   final String date;
 
-  @JsonKey(name : 'is_empty')
+  @JsonKey(name: 'is_empty')
   final bool isEmpty;
 
-  @JsonKey(name : 'slots')
+  @JsonKey(name: 'slots')
   final List<Slot> slots;
 
   SlotData(this.date, this.isEmpty, this.slots);
@@ -113,19 +111,18 @@ class SlotData {
   Map<String, dynamic> toJson() => toMap(this);
 
   Map<String, dynamic> toMap(SlotData instance) => <String, dynamic>{
-    'date': instance.date,
-    'is_empty': instance.isEmpty,
-    'slots': instance.slots.map((e) => e.toJson()).toList(),
-  };
+        'date': instance.date,
+        'is_empty': instance.isEmpty,
+        'slots': instance.slots.map((e) => e.toJson()).toList(),
+      };
 }
 
 @JsonSerializable()
 class SlotTiming {
-
-  @JsonKey(name : 'from')
+  @JsonKey(name: 'from')
   String from;
 
-  @JsonKey(name : 'to')
+  @JsonKey(name: 'to')
   String to;
 
   SlotTiming(this.from, this.to);
@@ -136,14 +133,12 @@ class SlotTiming {
   Map<String, dynamic> toJson() => _$SlotTimingToJson(this);
 }
 
-
 @JsonSerializable()
 class SlotMeta {
-
-  @JsonKey(name : 'hasNext')
+  @JsonKey(name: 'hasNext')
   final bool hasNext;
 
-  @JsonKey(name : 'hasPrev')
+  @JsonKey(name: 'hasPrev')
   final bool hasPrev;
 
   SlotMeta(this.hasNext, this.hasPrev);
@@ -152,13 +147,10 @@ class SlotMeta {
       _$SlotMetaFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlotMetaToJson(this);
-
-
 }
 
 @JsonSerializable()
 class SlotsWrapper {
-
   @JsonKey(name: "data")
   final SlotGrid slotGrid;
 
@@ -172,16 +164,10 @@ class SlotsWrapper {
 
   Map<String, dynamic> toJson() => _$SlotsWrapperToJson(this);
 
-  Map<String, dynamic> toMap() =>
-      <String, dynamic>{
+  Map<String, dynamic> toMap() => <String, dynamic>{
         'data': slotGrid.toJson(),
         'meta': slotMeta.toJson(),
       };
-
 }
 
-enum SlotStatus {
-  BOOKED,
-  NOT_AVAILABLE,
-  AVAILABLE
-}
+enum SlotStatus { BOOKED, NOT_AVAILABLE, AVAILABLE }
