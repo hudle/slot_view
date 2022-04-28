@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../common/date_time_utils.dart';
 
 part 'slot.g.dart';
-
+@Deprecated("Use Slot Model for Grid view")
 @JsonSerializable()
 class Slot {
   @JsonKey(name: "available_count")

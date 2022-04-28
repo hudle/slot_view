@@ -18,7 +18,7 @@ import '/model/slot.dart';
 
 
 const MAX_BOX_SIZE = 80.0;
-
+@Deprecated("Use slot grid view")
 class SlotsView extends StatelessWidget {
   //late BaseResponse<SlotGrid> response;
   final List<SlotData> data;
@@ -26,10 +26,7 @@ class SlotsView extends StatelessWidget {
 
 
   SlotsView({required this.data,required this.listener}) {
-    // response = BaseResponse.fromJson(jsonDecode(slotData));
-    // data = response.data!.slotData;
-    //TODO : Remove print
-   // print("SLOT LIST: ${data.length}");
+  
   }
 
   @override
@@ -40,7 +37,7 @@ class SlotsView extends StatelessWidget {
 if(data.isEmpty)
   {
     return Container(
-      child: Center(
+      child: const Center(
         child: Text("NO DATA"),
       )
     );
@@ -51,7 +48,7 @@ if(data.isEmpty)
         onRightSwipe: listener.onPreviousClick,
         onLeftSwipe: listener.onNextClick,
         child: Container(
-          color: Color(0xffF5F5F5),
+          color: const Color(0xffF5F5F5),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,7 +62,7 @@ if(data.isEmpty)
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (mainIndex == 0) SizedBox(
+                      if (mainIndex == 0) const SizedBox(
                        width: 40,
                       ),
                       Container(
@@ -109,10 +106,6 @@ if(data.isEmpty)
                           if (mainIndex == 0) Column(
                             children: [
                               VerticalGap(gap: 12,),
-                              // DateItem(
-                              //     day: '',
-                              //     date: ''
-                              // ),
                               VerticalGap(gap: 12,),
                               timeColumn(slotData),
                             ],
@@ -120,21 +113,6 @@ if(data.isEmpty)
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                VerticalGap(gap: 12,),
-                                // DateItem(
-                                //   day: convertFormat(
-                                //       time: slotData.date,
-                                //       newFormat: 'EEE',
-                                //       oldFormat: API_DATE_FORMAT),
-                                //   date: convertFormat(
-                                //       time: slotData.date,
-                                //       newFormat: 'dd',
-                                //       oldFormat: API_DATE_FORMAT),
-                                //   onDateTap: () {
-                                //     controller.setSelections(slotData.slots,slotData.date);
-                                //     listener.onSlotSelected2(controller.getAllSlots());
-                                //   },
-                                // ),
                                 VerticalGap(gap: 12,),
                                 Column(
 

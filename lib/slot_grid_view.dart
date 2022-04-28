@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:hudle_core/hudle_core.dart';
 import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
 import 'package:hudle_theme/hudle_theme.dart';
-import 'package:intl/intl.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
 import 'Slot_click_listener.dart';
 import 'common/date_time_utils.dart';
 import 'common/gap_widget.dart';
-import 'common/utils.dart';
-import 'hudle_slot_view.dart';
-//import 'model/slot.dart';
+import 'widgets/slot_item_widget.dart';
+import 'widgets/date_item_widget.dart';
+import 'widgets/time_item_widget.dart';
 
 class SlotGridView extends StatefulWidget {
   // final SlotGrid data;
@@ -166,7 +165,7 @@ class _SlotGridViewState extends State<SlotGridView> {
       ),
     );
   }
-
+  /// Creates the time slots Column
   Widget timeColumn(List<Timing> timings) => Column(
    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: timings.map((time) {
@@ -196,166 +195,8 @@ class _SlotGridViewState extends State<SlotGridView> {
   );
 }
 
-class DateItem extends StatelessWidget {
-  const DateItem({Key? key, this.date = "24", this.day = "Mon", this.onDateTap})
-      : super(key: key);
-
-  final String date;
-  final String day;
-
-  final VoidCallback? onDateTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onDateTap,
-      child: Container(
-        child: Column(
-          children: [
-            NormalText(
-              date,
-              color: kSecondaryText,
-              fontSize: 18, fontWeight: FontWeight.bold,
-            ),
-            VerticalGap(gap: 2,),
-            NormalText(
-              day,
-              color: kSecondaryText,
-              fontSize: 12, fontWeight: FontWeight.normal,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class TimeItem extends StatelessWidget {
-  final String startTime;
-  final String endTime;
-  final bool showEndTime;
-
-  const TimeItem(
-      {Key? key,
-        this.startTime = "12:00 AM",
-        this.endTime = "01:00 AM",
-        this.showEndTime = true})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 8,right: 2),
-      height: 70,
-      width: 40,
-      //color: kColorError,
-      margin: const EdgeInsets.only(right: 8, bottom: 2, top: 2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          NormalText(
-            startTime,
-            color: kTertiaryText,
-            fontSize: 10,
-          ),
-          //VerticalGap(gap: 4,),
-          Visibility(
-              visible: showEndTime,
-              child: NormalText(
-                endTime,
-                color: kTertiaryText,
-                fontSize: 10,
-              ))
-        ],
-      ),
-    );
-  }
-}
 
 
-class SlotItem extends StatelessWidget {
 
-  final Slot slot;
-  final double slotWidth;
-  final double slotHeight;
-  final Function? onSlotSelect;
-  final bool isSlotSelected;
-  final Color partialBookedColor;
-  final Color availableColor;
-  final Color bookedColor;
-  final Color notAvailableColor;
-  final Color partialBookedTextColor;
-  final Color availableTextColor;
-  final Color bookedTextColor;
-  final Color notAvailableTextColor;
-  final Color selectedColor;
-  final Color bookedSelectedColor;
-  final Color selectedTextColor;
-
-  SlotItem({Key? key, required this.slot,
-    this.isSlotSelected = false,
-    this.slotWidth = MAX_BOX_SIZE,
-    this.slotHeight = MAX_BOX_SIZE,
-    this.partialBookedColor = const Color(0xffe1fffc),
-    this.partialBookedTextColor = kColorAccent,
-    this.bookedColor = kColorLegendBooked,
-    this.bookedTextColor = kColorWhite,
-    this.availableColor = kColorWhite,
-    this.availableTextColor = kSecondaryText,
-    this.notAvailableColor = kColorLegendNotAvailable,
-    this.notAvailableTextColor = kColorLegendNotAvailable,
-    this.selectedColor = kColorLegendSelected,
-    this.selectedTextColor = kPrimaryText,
-    this.bookedSelectedColor = const Color(0XFF396295),
-    this.onSlotSelect
-  })
-      : super(key: key);
-
-  bool checkTime(String time) {
-    return DateFormat(API_FORMAT).parse(time).isAfter(DateTime.now());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    final isAvailable = checkTime(slot.endTime) && slot.isAvailable == true && (slot.availableCount ?? 0) > 0;
-    final isPartialBooked = (slot.availableCount ?? 0) < (slot.totalCount ?? 0)  && isAvailable;
-    final isBooked =  slot.isBooked == true;
-    final isSelected = isSlotSelected;
-    final isSelectedAndBooked = isSlotSelected && isBooked && !isPartialBooked;
-
-    final slotColor = isSelectedAndBooked ? bookedSelectedColor : isSelected ? selectedColor : isPartialBooked ? partialBookedColor : isBooked ? bookedColor : isAvailable == false ? notAvailableColor  : availableColor;
-    final textColor = isSelectedAndBooked ? bookedTextColor : isSelected ? selectedTextColor : isPartialBooked ? partialBookedTextColor : isBooked ? bookedTextColor : isAvailable == false ? notAvailableTextColor : availableTextColor;
-
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 600),
-      margin: const EdgeInsets.all(2),
-      width: slotWidth,
-      height: slotHeight,
-      decoration: BoxDecoration(color: slotColor, borderRadius:
-      BorderRadius.circular(isSelected ? 8 : 0)),
-      child: InkWell(
-        onTap: () {
-          onSlotSelect?.call(slot);
-        } ,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Visibility(
-                visible: isAvailable || isBooked,
-                child: NormalText(getDisplayNumber(slot.price ?? 0, isBooking: false,showSymbol: true), fontSize: 14 , color: textColor, fontWeight: FontWeight.w500,)),
-            VerticalGap(gap: 4,),
-            Visibility(
-                visible: (!isBooked && isPartialBooked) || isAvailable ,
-
-                child: NormalText(getDisplayNumber(slot.availableCount, isBooking: true,compact: true) + " left", fontSize: isSelected ? 12 : 11, color: textColor,)
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 
