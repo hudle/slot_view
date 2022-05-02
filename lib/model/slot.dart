@@ -11,8 +11,7 @@ part 'slot.g.dart';
 class Slot {
   @JsonKey(name: "available_count")
   final int? availableCount;
-  // @JsonKey(name: "bookings")
-  // List<Booking>? bookings;
+
   @JsonKey(name: "created_at")
   final String? createdAt;
   @JsonKey(name: "end_time")

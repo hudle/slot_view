@@ -21,10 +21,10 @@ class TimeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 8, right: 2),
-      height: 70,
+      height: 80,
       width: 40,
       //color: kColorError,
-      margin: const EdgeInsets.only(right: 8, bottom: 2, top: 2),
+      margin: const EdgeInsets.only(right: 8, bottom: 2,),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

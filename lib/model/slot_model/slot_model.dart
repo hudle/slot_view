@@ -48,7 +48,9 @@ class SlotDate {
 class SlotInfo {
   final List<SlotDate> dates;
   final List<Timing> timings;
+  //Info: Slot Date : List<Slots>
   final Map<String, List<Slot>> slots;
+
   final bool hasNext;
   final bool hasPrev;
 

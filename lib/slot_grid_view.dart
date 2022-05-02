@@ -2,8 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:hudle_core/hudle_core.dart';
-import 'package:hudle_theme/hudle_theme.dart';
+
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
 // Project imports:
@@ -60,50 +59,47 @@ class _SlotGridViewState extends State<SlotGridView> {
         children: [
           SingleChildScrollView(
             controller: _date,
-
             //INFO: Date Row
             scrollDirection: Axis.horizontal,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: widget.slotInfo.dates.map((slotData) {
-                final mainIndex = widget.slotInfo.dates.indexOf(slotData);
-                // final width = (MediaQuery.of(context).size.width/controller.slotDataLength).ceil().toDouble()-24;
-                final width =
-                    (MediaQuery.of(context).size.width / 4).ceil().toDouble() -
-                        24;
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (mainIndex == 0)
-                      const SizedBox(
-                        width: 50,
-                      ),
-                    Container(
-                      //color: Colors.red,
-                      margin: const EdgeInsets.only(left: 4),
-                      width: width,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            VerticalGap(),
-                            DateItem(
-                              day: convertFormat(
-                                  time: slotData.date,
-                                  newFormat: 'EEE',
-                                  oldFormat: API_DATE_FORMAT),
-                              date: convertFormat(
-                                  time: slotData.date,
-                                  newFormat: 'dd',
-                                  oldFormat: API_DATE_FORMAT),
-                              onDateTap: () {},
-                            ),
-                            VerticalGap(),
-                          ]),
-                    ),
-                  ],
-                );
-              }).toList(),
+              children: [
+                const SizedBox(
+                  width: 50,
+                ),
+                ...widget.slotInfo.dates.map((slotDate) {
+                  final mainIndex = widget.slotInfo.dates.indexOf(slotDate);
+                  // final width = (MediaQuery.of(context).size.width/controller.slotDataLength).ceil().toDouble()-24;
+                  final width = (MediaQuery.of(context).size.width / 4)
+                          .ceil()
+                          .toDouble() -
+                      24;
+
+                  return Container(
+                    margin: const EdgeInsets.only(left: 4, right: 5),
+                    width: 90,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          VerticalGap(),
+                          DateItem(
+                            day: convertFormat(
+                                time: slotDate.date,
+                                newFormat: 'EEE',
+                                oldFormat: API_DATE_FORMAT),
+                            date: convertFormat(
+                                time: slotDate.date,
+                                newFormat: 'dd',
+                                oldFormat: API_DATE_FORMAT),
+                            onDateTap: () {
+                              onSlotSelection(widget.slotInfo.slots[slotDate.date]!,slotDate.date);
+                            },
+                          ),
+                          VerticalGap(),
+                        ]),
+                  );
+                }).toList()
+              ],
             ),
           ),
           HorizontalGap(
@@ -149,6 +145,7 @@ class _SlotGridViewState extends State<SlotGridView> {
                               s.startTime.contains(stime)) {
                             foundSlot = true;
                             test = SlotItem(
+                              onSlotSelect: setSelection,isSlotSelected: isSelected(s, date),
                               slot: s,
                               slotHeight:
                                   index == 6 ? MAX_BOX_SIZE * 2 : MAX_BOX_SIZE,
@@ -192,7 +189,7 @@ class _SlotGridViewState extends State<SlotGridView> {
 
   /// Creates the time slots Column
   Widget timeColumn(List<Timing> timings) => Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: timings.map((time) {
           final index = timings.indexOf(time);
           final itemCount = timings.length;
@@ -213,4 +210,61 @@ class _SlotGridViewState extends State<SlotGridView> {
           );
         }).toList(),
       );
+
+
+  Map<String,Set<Slot>> selected = {};
+  void setSelection(Slot slot,String date) {
+
+    debugPrint('${slot.isAvailable}');
+    if(slot.isAvailable ==null || slot.isAvailable == false)
+    {
+      return;
+    }
+    if(isSelected(slot, date)) {
+      selected[date]?.remove(slot);
+    }
+    else{
+      if(selected[date] == null)
+      {
+        selected[date]= {slot};
+      }
+      else
+      {
+        selected[date]?.add(slot);
+      }
+    }
+
+
+  }
+
+  void setSelections(List<Slot> slots,String date) {
+
+    if(selected[date] == null)
+    {
+      selected[date] = slots.toSet();
+    }
+    else
+    {
+      if(selected[date]!.containsAll(slots))
+      {
+        selected[date]!.clear();
+      }
+      else {
+        selected[date]!.addAll(slots);
+      }
+
+    }
+    print(' selected length :${selected[date]!.length}');
+
+  }
+
+  bool  isSelected(slot,String date) {
+    return selected[date]?.contains(slot)??false;
+  }
+void onSlotSelection(List<Slot> slots,String date){
+  setSelections(slots,date);
+  print(selected.keys.toList());
+
+
+}
 }

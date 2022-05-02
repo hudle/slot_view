@@ -103,7 +103,7 @@ class SlotItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(isSelected ? 8 : 0)),
       child: InkWell(
         onTap: () {
-          onSlotSelect?.call(slot);
+          onSlotSelect?.call(slot,slot.slotDate);
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
