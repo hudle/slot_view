@@ -83,7 +83,7 @@ String dobDisplay(String date) {
 }
 
 int minusLeft(String dateString) {
-  print(dateString);
+  //print(dateString);
   final now = DateTime.now();
   final comparisonDate = DateFormat(API_FORMAT).parse(dateString);
   final x = comparisonDate.difference(now).inMinutes;

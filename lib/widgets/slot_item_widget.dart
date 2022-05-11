@@ -3,19 +3,18 @@ import 'dart:ui';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:hudle_core/hudle_core.dart';
+// Project imports:
+import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
 import 'package:hudle_theme/hudle_theme.dart';
 import 'package:intl/intl.dart';
 
-// Project imports:
-import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
 import '../common/date_time_utils.dart';
 import '../common/gap_widget.dart';
 import '../common/utils.dart';
 
-const MAX_BOX_SIZE = 80.0;
+const MAX_BOX_SIZE = 70.0;
 
 class SlotItem extends StatelessWidget {
   final Slot slot;
@@ -39,8 +38,8 @@ class SlotItem extends StatelessWidget {
       {Key? key,
       required this.slot,
       this.isSlotSelected = false,
-      this.slotWidth = MAX_BOX_SIZE,
-      this.slotHeight = MAX_BOX_SIZE,
+      this.slotWidth = SlotInfo.slotWidth,
+      this.slotHeight = SlotInfo.slotHeight,
       this.partialBookedColor = const Color(0xffe1fffc),
       this.partialBookedTextColor = kColorAccent,
       this.bookedColor = kColorLegendBooked,
@@ -95,7 +94,11 @@ class SlotItem extends StatelessWidget {
 
     return AnimatedContainer(
       duration: Duration(milliseconds: 600),
-      margin: const EdgeInsets.all(2),
+      margin: const EdgeInsets.only(
+          left: 5,
+          right: 5,
+          top: SlotInfo.slotWidth * 0.10,
+          bottom: SlotInfo.slotWidth * 0.05),
       width: slotWidth,
       height: slotHeight,
       decoration: BoxDecoration(
@@ -103,7 +106,7 @@ class SlotItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(isSelected ? 8 : 0)),
       child: InkWell(
         onTap: () {
-          onSlotSelect?.call(slot,slot.slotDate);
+          onSlotSelect?.call(slot, slot.slotDate);
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

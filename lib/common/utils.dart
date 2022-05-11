@@ -34,7 +34,7 @@ String formatPrice(dynamic price,
 }
 
 String formatBookingNumber(dynamic number, {bool compact = true}) {
-  print(number);
+  //print(number);
   if (number is int) {
     return '$number';
   }

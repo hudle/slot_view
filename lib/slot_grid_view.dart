@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:hudle_slots_view/interactive_slots_view.dart';
 // Project imports:
 import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
 // Package imports:
@@ -53,8 +52,8 @@ class _SlotGridViewState extends State<SlotGridView> {
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveSlotsView(widget.listener, widget.slotInfo);
-    // getGridData(data);
+    // return InteractiveSlotsView(widget.listener, widget.slotInfo);
+    //  getGridData(data);
     return Container(
       child: Column(
         children: [

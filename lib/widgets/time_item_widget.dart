@@ -1,8 +1,8 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:hudle_core/hudle_core.dart';
+import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
 import 'package:hudle_theme/hudle_theme.dart';
 
 class TimeItem extends StatelessWidget {
@@ -20,11 +20,17 @@ class TimeItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 8, right: 2),
-      height: 80,
-      width: 40,
+      padding: const EdgeInsets.only(
+        left: 8,
+        right: 2,
+      ),
+      height: SlotInfo.slotHeight + 5,
+      width: SlotInfo.timeWidth,
       //color: kColorError,
-      margin: const EdgeInsets.only(right: 8, bottom: 2,),
+      margin: const EdgeInsets.only(
+          right: 8,
+          bottom: SlotInfo.slotWidth * 0.05,
+          top: SlotInfo.slotWidth * 0.05),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

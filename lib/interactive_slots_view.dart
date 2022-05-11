@@ -154,6 +154,7 @@ class _InteractiveSlotsViewState extends State<InteractiveSlotsView> {
                       builder:
                           (BuildContext context, BoxConstraints constraints) {
                         return InteractiveViewer.builder(
+                          onInteractionUpdate: (details) {},
                           alignPanAxis: true,
                           scaleEnabled: false,
                           transformationController: _transformationController,

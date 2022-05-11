@@ -46,6 +46,9 @@ class SlotDate {
 }
 
 class SlotInfo {
+  static const slotHeight = 90.0;
+  static const slotWidth = 90.0;
+  static const timeWidth = 50.0;
   final List<SlotDate> dates;
   final List<Timing> timings;
   //Info: Slot Date : List<Slots>
