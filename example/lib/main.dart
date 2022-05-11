@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hudle_slots_view/Slot_click_listener.dart';
+import 'package:hudle_slots_view/matrix_builder/matrix_builder.dart';
 import 'package:hudle_slots_view/model/slot.dart';
 import 'package:hudle_slots_view/model/slot_model/slot_model.dart' as slotInfo;
 import 'package:hudle_slots_view/yet another scroll view (YASV)/yet_another_slot_view.dart';
@@ -21,9 +22,50 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const MyTestApp());
+        home: const MyBuilderExample());
   }
 }
+
+
+
+class MyBuilderExample extends StatelessWidget {
+  const MyBuilderExample({Key? key}) : super(key: key);
+
+  Widget box(String text) => Container(
+                            child: Center(child: Text(text)),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.blueAccent),
+                            ),
+                            margin: const EdgeInsets.only(
+                                left: 5, right: 5, top: 10, bottom: 5),
+                            height: 70,
+                            width: 70,
+                          );
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      body: SafeArea(
+        child: MatrixBuilder(
+          rowCount: 8,
+          columnCount: 21,
+          columnBuilder: (context, index) {
+            return box("Date");
+          },
+          headBuilder: (context, index) {
+            return box("Time");
+          },
+          cellBuilder: (context, row, column) {
+            return SizedBox(
+                child: box("Slot"));
+          },
+        ),
+      ),
+    );
+  }
+}
+
 
 class MyTestApp extends StatelessWidget implements SlotClickListener {
   const MyTestApp({Key? key}) : super(key: key);
