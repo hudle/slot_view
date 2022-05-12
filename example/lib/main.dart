@@ -15595,7 +15595,7 @@ class MyBuilderExample extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: MatrixBuilder(
-          cellWidth: 80,
+          cellWidth: 300,
           columnWidth: 95,
           headerHeight: 90,
           rowCount: 9,
@@ -15693,7 +15693,8 @@ class _MyTestAppState extends State<MyTestApp> {
     return Scaffold(
       body: SafeArea(
         child: MatrixBuilder(
-          cellWidth: sf.SlotInfo.slotWidth + 10,
+          cellWidth: 100,
+          cellHeight: 100,
           cellBuilder: (BuildContext, int row, int column) {
             var startTime = widget.info.timings[column].from;
             var endTime = widget.info.timings[column].to;

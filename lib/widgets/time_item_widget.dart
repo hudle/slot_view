@@ -29,8 +29,8 @@ class TimeItem extends StatelessWidget {
       //color: kColorError,
       margin: const EdgeInsets.only(
           right: 8,
-          bottom: SlotInfo.slotWidth * 0.05,
-          top: SlotInfo.slotWidth * 0.05),
+          bottom: SlotInfo.slotHeight * 0.05,
+          top: SlotInfo.slotHeight * 0.05),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
