@@ -26,7 +26,13 @@ class Slot {
     this.facilityName,
     this.availableCount,
   });
+
+  @override
+  String toString() {
+    return startTime;
+  }
 }
+
 
 class Timing {
   String from;

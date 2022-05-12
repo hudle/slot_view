@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:example/slot_view_builder_example.dart';
 import 'package:flutter/material.dart';
 import 'package:hudle_slots_view/Slot_click_listener.dart';
 import 'package:hudle_slots_view/common/date_time_utils.dart';
 import 'package:hudle_slots_view/matrix_builder/matrix_builder.dart';
 import 'package:hudle_slots_view/model/slot.dart';
 import 'package:hudle_slots_view/model/slot_model/slot_model.dart' as sf;
+import 'package:hudle_slots_view/slot_builder/slot_view_builder.dart';
 import 'package:hudle_slots_view/widgets/date_item_widget.dart';
 import 'package:hudle_slots_view/widgets/slot_item_widget.dart';
 import 'package:hudle_slots_view/widgets/time_item_widget.dart';
@@ -15572,7 +15574,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: MyTestApp(getMockData(responseMissingData)));
+        home: SlotViewBuilderExample(getMockData(responseMissingData)));
   }
 }
 
@@ -15648,6 +15650,7 @@ class MyTestApp extends StatefulWidget implements SlotClickListener {
     // TODO: implement onSlotSelected2
   }
 }
+
 
 class _MyTestAppState extends State<MyTestApp> {
   Map<String, Set<sf.Slot>> selectedSlots = {};
