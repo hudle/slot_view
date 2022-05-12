@@ -42,7 +42,9 @@ class DateHeader extends StatelessWidget {
                           time: dates[index].date,
                           newFormat: 'dd',
                           oldFormat: API_DATE_FORMAT),
-                      onDateTap: () {},
+                      onDateTap: () {
+                        print("DATE added ${dates[index].date}");
+                      },
                     ),
                   );
                 },

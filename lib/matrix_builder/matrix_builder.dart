@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
-import '../model/slot_model/slot_model.dart';
-
 class MatrixBuilder extends StatefulWidget {
   final CellBuilder cellBuilder;
   final int rowCount;
   final int columnCount;
   final HeadBuilder headBuilder;
   final ColumnBuilder columnBuilder;
+  final double cellWidth;
+  final double headerHeight;
+  final double headerWidth;
+  final double columnWidth;
 
-  const MatrixBuilder({
-    required this.cellBuilder,
-    required this.rowCount,
-    required this.columnCount,
-    required this.headBuilder,
-    required this.columnBuilder,
-    Key? key,
-  }) : super(key: key);
+  const MatrixBuilder(
+      {required this.cellBuilder,
+      required this.rowCount,
+      required this.columnCount,
+      required this.headBuilder,
+      required this.columnBuilder,
+      this.cellWidth = 80.0,
+      this.headerHeight = 50.0,
+      this.headerWidth = 80.0,
+      this.columnWidth = 50.0});
 
   @override
   State<MatrixBuilder> createState() => _MatrixBuilderState();
@@ -41,12 +45,17 @@ class _MatrixBuilderState extends State<MatrixBuilder> {
     return Column(
       children: [
         HeaderWidget(
+          tileHeight: widget.headerHeight,
+          tileWidth: widget.headerWidth,
+          firstTileWidth: widget.columnWidth,
           scrollController: _headController,
           count: widget.rowCount,
           headBuilder: widget.headBuilder,
         ),
         Expanded(
           child: CellWidget(
+            cellWidth: widget.cellWidth,
+            columnWidth: widget.columnWidth,
             rowCount: widget.rowCount,
             columnCount: widget.columnCount,
             // slots: widget.info.slots,
@@ -64,7 +73,9 @@ class HeaderWidget extends StatelessWidget {
   final ScrollController scrollController;
   final int count;
   final HeadBuilder headBuilder;
-  final tileHeight = 50.0;
+  final double tileHeight;
+  final double tileWidth;
+  final double firstTileWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +83,9 @@ class HeaderWidget extends StatelessWidget {
       height: tileHeight,
       child: Row(
         children: [
-          const SizedBox(
-            height: SlotInfo.slotHeight,
-            width: SlotInfo.timeWidth,
+          SizedBox(
+            height: tileHeight,
+            width: firstTileWidth,
           ),
           Expanded(
             child: ListView(
@@ -94,10 +105,13 @@ class HeaderWidget extends StatelessWidget {
     );
   }
 
-  HeaderWidget(
+  const HeaderWidget(
       {required this.scrollController,
       required this.count,
-      required this.headBuilder});
+      required this.headBuilder,
+      required this.tileHeight,
+      required this.tileWidth,
+      required this.firstTileWidth});
 }
 
 class CellWidget extends StatefulWidget {
@@ -106,6 +120,8 @@ class CellWidget extends StatefulWidget {
   final int rowCount;
   final CellBuilder cellBuilder;
   final ColumnBuilder columnBuilder;
+  final double columnWidth;
+  final double cellWidth;
 
   //Info: Slot Date : List<Slots>
   // final Map<String, List<Slot>> slots;
@@ -119,6 +135,8 @@ class CellWidget extends StatefulWidget {
     required this.rowCount,
     required this.cellBuilder,
     required this.columnBuilder,
+    required this.columnWidth,
+    required this.cellWidth,
   });
 }
 
@@ -126,8 +144,6 @@ class _CellWidgetState extends State<CellWidget> {
   late LinkedScrollControllerGroup _controllers;
   late ScrollController _firstColumnController;
   late ScrollController _restColumnsController;
-
-  final cellWidth = SlotInfo.slotWidth + 10.0;
 
   @override
   void initState() {
@@ -149,13 +165,13 @@ class _CellWidgetState extends State<CellWidget> {
     return Row(
       children: [
         SizedBox(
-          width: SlotInfo.timeWidth,
+          width: widget.columnWidth,
           child: ListView(
             controller: _firstColumnController,
             physics: const AlwaysScrollableScrollPhysics(
                 parent: BouncingScrollPhysics()),
-            children:
-                List.generate(widget.columnCount, (index) => widget.columnBuilder(context, index)),
+            children: List.generate(widget.columnCount,
+                (index) => widget.columnBuilder(context, index)),
           ),
         ),
         Expanded(
@@ -164,7 +180,7 @@ class _CellWidgetState extends State<CellWidget> {
             scrollDirection: Axis.horizontal,
             physics: const ClampingScrollPhysics(),
             child: SizedBox(
-              width: (widget.rowCount) * cellWidth,
+              width: (widget.rowCount) * widget.cellWidth,
               child: ListView(
                   controller: _restColumnsController,
                   physics: const AlwaysScrollableScrollPhysics(

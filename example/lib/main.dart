@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hudle_slots_view/Slot_click_listener.dart';
+import 'package:hudle_slots_view/common/date_time_utils.dart';
 import 'package:hudle_slots_view/matrix_builder/matrix_builder.dart';
 import 'package:hudle_slots_view/model/slot.dart';
-import 'package:hudle_slots_view/model/slot_model/slot_model.dart' as slotInfo;
-import 'package:hudle_slots_view/yet another scroll view (YASV)/yet_another_slot_view.dart';
+import 'package:hudle_slots_view/model/slot_model/slot_model.dart' as sf;
+import 'package:hudle_slots_view/widgets/date_item_widget.dart';
+import 'package:hudle_slots_view/widgets/slot_item_widget.dart';
+import 'package:hudle_slots_view/widgets/time_item_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,62 +16,37 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+  sf.SlotInfo getMockData(var response) {
+    final map = jsonDecode(response) as Map<String, dynamic>;
+    print(map);
+    var x = SlotGrid.fromJson(map);
+    print(x);
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const MyBuilderExample());
-  }
-}
+    Map<String, List<sf.Slot>> slots = {};
+    for (SlotData data in x.slotData) {
+      slots[data.date] = data.slots
+          .map((e) => sf.Slot(
+              availableCount: e.availableCount,
+              isAvailable: true,
+              endTime: e.endTime,
+              startTime: e.startTime,
+              slotDate: data.date,
+              price: e.price,
+              totalCount: e.totalCount,
+              isBooked: e.isBooked))
+          .toList();
+    }
 
-
-
-class MyBuilderExample extends StatelessWidget {
-  const MyBuilderExample({Key? key}) : super(key: key);
-
-  Widget box(String text) => Container(
-                            child: Center(child: Text(text)),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blueAccent),
-                            ),
-                            margin: const EdgeInsets.only(
-                                left: 5, right: 5, top: 10, bottom: 5),
-                            height: 70,
-                            width: 70,
-                          );
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      body: SafeArea(
-        child: MatrixBuilder(
-          rowCount: 8,
-          columnCount: 21,
-          columnBuilder: (context, index) {
-            return box("Date");
-          },
-          headBuilder: (context, index) {
-            return box("Time");
-          },
-          cellBuilder: (context, row, column) {
-            return SizedBox(
-                child: box("Slot"));
-          },
-        ),
-      ),
+    final info = sf.SlotInfo(
+      timings:
+          x.slotTimings.map((e) => sf.Timing(from: e.from, to: e.to)).toList(),
+      slots: slots,
+      dates: x.slotData.map((e) => sf.SlotDate(e.date, e.isEmpty)).toList(),
+      hasNext: false,
+      hasPrev: false,
     );
+    return info;
   }
-}
-
-
-class MyTestApp extends StatelessWidget implements SlotClickListener {
-  const MyTestApp({Key? key}) : super(key: key);
 
   final response = ''' {
     "success": true,
@@ -15585,63 +15563,230 @@ class MyTestApp extends StatelessWidget implements SlotClickListener {
     ]
   }
 }''';
-  slotInfo.SlotInfo getMockData(var response) {
-    final map = jsonDecode(response) as Map<String, dynamic>;
-    print(map);
-    var x = SlotGrid.fromJson(map);
-    print(x);
 
-    Map<String, List<slotInfo.Slot>> slots = {};
-    for (SlotData data in x.slotData) {
-      slots[data.date] = data.slots
-          .map((e) => slotInfo.Slot(
-              availableCount: e.availableCount,
-              isAvailable: true,
-              endTime: e.endTime,
-              startTime: e.startTime,
-              slotDate: data.date,
-              price: e.price,
-              totalCount: e.totalCount,
-              isBooked: e.isBooked))
-          .toList();
-    }
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MyTestApp(getMockData(responseMissingData)));
+  }
+}
 
-    final info = slotInfo.SlotInfo(
-      timings: x.slotTimings
-          .map((e) => slotInfo.Timing(from: e.from, to: e.to))
-          .toList(),
-      slots: slots,
-      dates:
-          x.slotData.map((e) => slotInfo.SlotDate(e.date, e.isEmpty)).toList(),
-      hasNext: false,
-      hasPrev: false,
+///Example for texting matrix Builder
+class MyBuilderExample extends StatelessWidget {
+  const MyBuilderExample({Key? key}) : super(key: key);
+
+  Widget box(String text) => Container(
+        child: Center(child: Text(text)),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.blueAccent),
+        ),
+        margin: const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 5),
+        height: 70,
+        width: 70,
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: MatrixBuilder(
+          cellWidth: 80,
+          columnWidth: 95,
+          headerHeight: 90,
+          rowCount: 9,
+          columnCount: 100,
+          columnBuilder: (context, index) {
+            return box("$index");
+          },
+          headBuilder: (context, index) {
+            return box("$index");
+          },
+          cellBuilder: (context, row, column) {
+            return SizedBox(child: box("$row * $column"));
+          },
+        ),
+      ),
     );
-    return info;
+  }
+}
+
+///Example for texting matrix Builder with slots
+class MyTestApp extends StatefulWidget implements SlotClickListener {
+  final sf.SlotInfo info;
+  @override
+  State<MyTestApp> createState() => _MyTestAppState();
+
+  MyTestApp(this.info);
+
+  @override
+  void onInfoClick() {
+    // TODO: implement onInfoClick
+  }
+
+  @override
+  void onNextClick() {
+    // TODO: implement onNextClick
+  }
+
+  @override
+  void onPreviousClick() {
+    // TODO: implement onPreviousClick
+  }
+
+  @override
+  void onSlotDeleted() {
+    // TODO: implement onSlotDeleted
+  }
+
+  @override
+  void onSlotSelected2(List<sf.Slot> slot) {
+    // TODO: implement onSlotSelected2
+  }
+}
+
+class _MyTestAppState extends State<MyTestApp> {
+  Map<String, Set<sf.Slot>> selectedSlots = {};
+
+  void setSelection(sf.Slot slot, String date) {
+    debugPrint('${slot.isAvailable}');
+    if (slot.isAvailable == null || slot.isAvailable == false) {
+      return;
+    }
+    if (isSelected(slot, date)) {
+      selectedSlots[date]?.remove(slot);
+    } else {
+      if (selectedSlots[date] == null) {
+        selectedSlots[date] = {slot};
+      } else {
+        selectedSlots[date]?.add(slot);
+      }
+    }
+    setState(() {});
+  }
+
+  bool isSelected(slot, String date) {
+    return selectedSlots[date]?.contains(slot) ?? false;
+  }
+
+  void _selectDates(String date) {
+    List<sf.Slot> slots = widget.info.slots[date] ?? [];
+    if (selectedSlots[date] == null) {
+      selectedSlots[date] = slots.toSet();
+    } else {
+      if (selectedSlots[date]!.containsAll(slots)) {
+        selectedSlots[date]!.clear();
+      } else {
+        selectedSlots[date]!.addAll(slots);
+      }
+    }
+    setState(() {});
+    print(' selected length :${selectedSlots[date]!.length}');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: YetAnotherslotsView(getMockData(responseMissingData)),
+        child: MatrixBuilder(
+          cellWidth: sf.SlotInfo.slotWidth + 10,
+          cellBuilder: (BuildContext, int row, int column) {
+            var startTime = widget.info.timings[column].from;
+            var endTime = widget.info.timings[column].to;
+            Widget test = Container(
+              child: const Center(
+                child: Text("N/A"),
+              ),
+            );
+            bool foundSlot = false;
+            var date = widget.info.dates[row].date;
+            for (sf.Slot s in widget.info.slots[date]!) {
+              if (s.slotDate == date && s.startTime.contains(startTime)) {
+                foundSlot = true;
+                test = SlotItem(
+                  isSlotSelected: isSelected(s, s.slotDate),
+                  onSlotSelect: setSelection,
+                  // isSlotSelected: isSelected(s, date),
+                  slot: s,
+                  /*slotHeight:
+                                index == 6 ? MAX_BOX_SIZE * 2 : MAX_BOX_SIZE,*/
+                );
+              }
+
+              if (foundSlot) {
+                break;
+              }
+            }
+            if (!foundSlot) {
+              test = SlotItem(
+                  onSlotSelect: () {},
+                  slot: sf.Slot(
+                      startTime: convertFormat(
+                          time: startTime,
+                          newFormat: API_FORMAT,
+                          oldFormat: SLOT_TIMING),
+                      endTime: convertFormat(
+                          time: endTime,
+                          newFormat: API_FORMAT,
+                          oldFormat: SLOT_TIMING),
+                      slotDate: date,
+                      isAvailable: false,
+                      price: 0.0,
+                      totalCount: 0));
+            }
+            return test;
+          },
+          columnBuilder: (BuildContext, int column) {
+            var time = widget.info.timings[column];
+            final index = widget.info.timings.indexOf(time);
+            final itemCount = widget.info.timings.length;
+            print(time.from.runtimeType);
+            final s = convertFormat(
+                time: time.from,
+                newFormat: DISPLAY_TIME,
+                oldFormat: SLOT_TIMING);
+
+            final e = convertFormat(
+                time: time.to, newFormat: DISPLAY_TIME, oldFormat: SLOT_TIMING);
+
+            final endDate = index == itemCount - 1 ||
+                (index + 1 < itemCount) &&
+                    time.to != widget.info.timings[index + 1].from;
+
+            return TimeItem(
+              showEndTime: endDate,
+              startTime: s,
+              endTime: e,
+            );
+          },
+          headBuilder: (BuildContext, int row) {
+            return Container(
+              height: sf.SlotInfo.slotHeight + 30,
+              width: sf.SlotInfo.slotWidth,
+              margin: const EdgeInsets.only(left: 5, right: 5),
+              child: DateItem(
+                day: convertFormat(
+                    time: widget.info.dates[row].date,
+                    newFormat: 'EEE',
+                    oldFormat: API_DATE_FORMAT),
+                date: convertFormat(
+                    time: widget.info.dates[row].date,
+                    newFormat: 'dd',
+                    oldFormat: API_DATE_FORMAT),
+                onDateTap: () {
+                  _selectDates(widget.info.dates[row].date);
+                },
+              ),
+            );
+          },
+          columnCount: widget.info.timings.length,
+          rowCount: widget.info.dates.length,
+        ),
       ),
     );
-  }
-
-  void onNextClick() {
-    // TODO: implement onNextClick
-  }
-  void onPreviousClick() {
-    // TODO: implement onPreviousClick
-  }
-  void onInfoClick() {
-    // TODO: implement onInfoClick
-  }
-  void onSlotDeleted() {
-    // TODO: implement onSlotDeleted
-  }
-  @override
-  void onSlotSelected2(List<slotInfo.Slot> slot) {
-    // TODO: implement onSlotSelected2
   }
 }

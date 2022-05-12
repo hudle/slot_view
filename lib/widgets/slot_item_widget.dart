@@ -115,7 +115,7 @@ class SlotItem extends StatelessWidget {
                 visible: isAvailable || isBooked,
                 child: NormalText(
                   getDisplayNumber(slot.price,
-                      isBooking: false, showSymbol: true),
+                      compact: false, isBooking: false, showSymbol: true),
                   fontSize: 14,
                   color: textColor,
                   fontWeight: FontWeight.w500,

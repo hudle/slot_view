@@ -8,8 +8,9 @@ String getDisplayNumber(dynamic number,
   try {
     if (isBooking) {
       return formatBookingNumber(number, compact: compact);
-    } else
+    } else {
       return formatPrice(number, compact: compact, showSymbol: showSymbol);
+    }
   } catch (e) {
     return "N/A";
   }
