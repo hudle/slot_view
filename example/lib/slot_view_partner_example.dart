@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hudle_slots_view/Slot_click_listener.dart';
 import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
-import 'package:hudle_slots_view/slot_builder/slot_view_builder.dart';
-import 'package:hudle_slots_view/slot_builder/slot_view_days.dart';
+import 'package:hudle_slots_view/slot_views/slot_view_days.dart';
 
 class SlotViewBuilderExample extends StatelessWidget {
   final SlotInfo slotInfo;
@@ -13,7 +11,7 @@ class SlotViewBuilderExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: DaySlotView(
+        child: PartnerSlotView(
           slotInfo: slotInfo,
           onSlotSelected: (slots) {
             print(

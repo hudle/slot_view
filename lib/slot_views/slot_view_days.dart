@@ -46,8 +46,8 @@ class DaySlotView extends StatefulWidget {
     this.selectedColor = kColorLegendSelected,
     this.selectedTextColor = kPrimaryText,
     this.bookedSelectedColor = const Color(0XFF396295),
-    this.slotHeight = 100,
-    this.slotWidth = 100,
+    this.slotHeight = 80,
+    this.slotWidth = 80,
     this.emptyBoxBuilder,
   }) : super(key: key);
 
