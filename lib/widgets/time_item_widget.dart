@@ -9,12 +9,15 @@ class TimeItem extends StatelessWidget {
   final String startTime;
   final String endTime;
   final bool showEndTime;
+  final Widget? icon;
 
   const TimeItem(
       {Key? key,
       this.startTime = "12:00 AM",
       this.endTime = "01:00 AM",
-      this.showEndTime = true})
+      this.showEndTime = true,
+        this.icon,
+      })
       : super(key: key);
 
   @override
@@ -35,10 +38,22 @@ class TimeItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          NormalText(
-            startTime,
-            color: kTertiaryText,
-            fontSize: 10,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              NormalText(
+                startTime,
+                color: kTertiaryText,
+                fontSize: 10,
+              ),
+              if (icon != null)
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  height: 10,
+                  width: 10,
+                  child: icon!,
+                )
+            ],
           ),
           //VerticalGap(gap: 4,),
           Visibility(

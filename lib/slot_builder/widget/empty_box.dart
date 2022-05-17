@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hudle_slots_view/hudle_slot_view.dart';
 import 'package:hudle_theme/hudle_theme.dart';
 
 class EmptyBox extends StatelessWidget {
@@ -22,3 +21,6 @@ class EmptyBox extends StatelessWidget {
     );
   }
 }
+
+
+const MAX_BOX_SIZE = 80.0;

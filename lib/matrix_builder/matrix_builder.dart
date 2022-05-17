@@ -21,7 +21,7 @@ class MatrixBuilder extends StatefulWidget {
       required this.columnBuilder,
       this.cellWidth = 80.0,
       this.cellHeight = 80.0,
-      this.headerHeight = 50.0,
+      this.headerHeight = 40.0,
       this.headerWidth = 80.0,
       this.columnWidth = 50.0});
 
@@ -174,6 +174,7 @@ class _CellWidgetState extends State<CellWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: widget.columnWidth,

@@ -9,6 +9,10 @@ import 'package:hudle_theme/hudle_theme.dart';
 import 'gap_widget.dart';
 
 class LegendView extends StatelessWidget {
+
+  final List<LegendData> data;
+  const LegendView({required this.data, Key? key}): super(key: key);
+
   Widget legendItem(Color color, Color border, String text) => Row(
         children: [
           Container(
@@ -33,13 +37,22 @@ class LegendView extends StatelessWidget {
       color: kColorLegendBackground,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          legendItem(kColorAccent, kColorAccent, "Booked"),
-          legendItem(kColorWhite, kColorGrey500, "Available"),
-          legendItem(kColorLegendNotAvailable, kColorGrey500, "Not Available"),
-          legendItem(kColorLegendSelected, kColorPrimary, "Selected"),
-        ],
+        children: data.map((legend) =>  legendItem(legend.color, legend.borderColor, legend.text),).toList(),
       ),
     );
   }
+}
+
+// legendItem(kColorAccent, kColorAccent, "Booked"),
+// legendItem(kColorWhite, kColorGrey500, "Available"),
+// legendItem(kColorLegendNotAvailable, kColorGrey500, "Not Available"),
+// legendItem(kColorLegendSelected, kColorPrimary, "Selected"),
+
+
+class LegendData {
+  final String text;
+  final Color color;
+  final Color borderColor;
+
+  LegendData({required this.text, required this.color, required this.borderColor});
 }

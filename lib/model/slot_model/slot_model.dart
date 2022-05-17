@@ -46,9 +46,10 @@ class Timing {
 
 class SlotDate {
   final String date;
+  final String groupName;
   final bool isEmpty;
 
-  SlotDate(this.date, this.isEmpty);
+  SlotDate(this.date, this.isEmpty, {this.groupName = ''});
 }
 
 class SlotInfo {

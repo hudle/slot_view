@@ -41,8 +41,8 @@ Map<String, dynamic> _$SlotToJson(Slot instance) => <String, dynamic>{
     };
 
 SlotGrid _$SlotGridFromJson(Map<String, dynamic> json) {
-  print('INSide JSON : $json');
-  print(json['slot_data']);
+ // print('INSide JSON : $json');
+  //print(json['slot_data']);
   return SlotGrid(
     (json['data']['slot_data'] as List<dynamic>)
         .map((e) => SlotData.fromJson(e as Map<String, dynamic>))

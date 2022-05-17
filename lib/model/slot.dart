@@ -54,7 +54,23 @@ class Slot {
     this.facilityName,
   );
 
-  factory Slot.fromJson(Map<String, dynamic> json) => _$SlotFromJson(json);
+  factory Slot.fromJson(Map<String, dynamic> json) {
+    return Slot(
+      json['available_count'] is String ? int.tryParse(json['available_count']) ?? 0 : json['available_count'],
+      json['created_at'] as String?,
+      json['end_time'] as String,
+      json['facility_id'] is String ? int.tryParse(json['facility_id']) ?? 0 : json['facility_id'],
+      json['id'] as String?,
+      json['is_available'] as bool?,
+      json['price'],
+      json['base_price'],
+      json['start_time'] as String,
+      json['updated_at'] as String?,
+      json['total_count'] is String ? int.tryParse(json['total_count']) ?? 0 : json['total_count'],
+      json['is_booked'] as bool?,
+      json['facility_name'] as String?,
+    );
+  }
 
   Map<String, dynamic> toJson() => _$SlotToJson(this);
 
@@ -104,8 +120,15 @@ class SlotData {
 
   SlotData(this.date, this.isEmpty, this.slots);
 
-  factory SlotData.fromJson(Map<String, dynamic> json) =>
-      _$SlotDataFromJson(json);
+  factory SlotData.fromJson(Map<String, dynamic> json) {
+    return SlotData(
+      json['date'] ?? json['group_name'] ?? '',
+      json['is_empty'] as bool,
+      (json['slots'] as List<dynamic>)
+          .map((e) => Slot.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() => toMap(this);
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hudle_slots_view/Slot_click_listener.dart';
+import 'package:hudle_slots_view/common/legend_view.dart';
 import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
 import 'package:hudle_slots_view/slot_builder/slot_view_builder.dart';
 import 'package:hudle_slots_view/slot_builder/widget/header_item_widget.dart';
@@ -9,27 +9,31 @@ import 'package:hudle_theme/hudle_theme.dart';
 
 import '../common/date_time_utils.dart';
 
-class DaySlotView extends StatefulWidget {
+class PartnerSlotView extends StatefulWidget {
   final SlotInfo slotInfo;
   final Function(List<Slot> slots) onSlotSelected;
   final Function? onNext;
   final Function? onPrevious;
   final Color partialBookedColor;
   final Color availableColor;
+  final Color availableLegendBorderColor;
   final Color bookedColor;
+  final Color bookedLegendBorderColor;
   final Color notAvailableColor;
+  final Color notAvailableLegendBorderColor;
   final Color partialBookedTextColor;
   final Color availableTextColor;
   final Color bookedTextColor;
   final Color notAvailableTextColor;
   final Color selectedColor;
+  final Color selectedLegendBorderColor;
   final Color bookedSelectedColor;
   final Color selectedTextColor;
   final double slotHeight;
   final double slotWidth;
   final EmptyBoxBuilder? emptyBoxBuilder;
 
-  const DaySlotView({
+  const PartnerSlotView({
     Key? key,
     required this.slotInfo,
     required this.onSlotSelected,
@@ -38,12 +42,16 @@ class DaySlotView extends StatefulWidget {
     this.partialBookedColor = const Color(0xffe1fffc),
     this.partialBookedTextColor = kColorAccent,
     this.bookedColor = kColorLegendBooked,
+    this.bookedLegendBorderColor = kColorLegendBooked,
     this.bookedTextColor = kColorWhite,
     this.availableColor = kColorWhite,
+    this.availableLegendBorderColor = kColorGrey500,
     this.availableTextColor = kSecondaryText,
     this.notAvailableColor = kColorLegendNotAvailable,
+    this.notAvailableLegendBorderColor = kColorGrey500,
     this.notAvailableTextColor = kColorLegendNotAvailable,
     this.selectedColor = kColorLegendSelected,
+    this.selectedLegendBorderColor = kColorPrimary,
     this.selectedTextColor = kPrimaryText,
     this.bookedSelectedColor = const Color(0XFF396295),
     this.slotHeight = 80,
@@ -52,10 +60,10 @@ class DaySlotView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DaySlotView> createState() => _DaySlotViewState();
+  State<PartnerSlotView> createState() => _PartnerSlotViewState();
 }
 
-class _DaySlotViewState extends State<DaySlotView> {
+class _PartnerSlotViewState extends State<PartnerSlotView> {
   Map<String, Set<Slot>> selectedSlots = {};
 
   @override
@@ -67,84 +75,108 @@ class _DaySlotViewState extends State<DaySlotView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SlotViewBuilder<SlotDate, Timing, Slot>(
-          slotHeight: widget.slotHeight,
-          slotWidth: widget.slotWidth,
-          columns: widget.slotInfo.timings,
-          headers: widget.slotInfo.dates,
-          emptyBoxBuilder: widget.emptyBoxBuilder,
-          fillBoxCallback: (SlotDate slotDate, Timing timing) {
-            final startTime = timing.from;
-            final date = slotDate.date;
+        child: NestedScrollView(
+          headerSliverBuilder: (_, __) {
+            return [
+              SliverAppBar(
+                leading: Container(),
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                toolbarHeight: 40,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: LegendView(
+                      data: [
+                        LegendData(text: 'Booked', color: widget.bookedColor, borderColor: widget.bookedLegendBorderColor),
+                        LegendData(text: 'Available', color: widget.availableColor, borderColor: widget.availableLegendBorderColor),
+                        LegendData(text: 'Not Available', color: widget.notAvailableColor, borderColor: widget.notAvailableLegendBorderColor),
+                        LegendData(text: 'Selected', color: widget.selectedColor, borderColor: widget.selectedLegendBorderColor),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ];
+          },
+          body: SlotViewBuilder<SlotDate, Timing, Slot>(
+            slotHeight: widget.slotHeight,
+            slotWidth: widget.slotWidth,
+            columns: widget.slotInfo.timings,
+            headers: widget.slotInfo.dates,
+            emptyBoxBuilder: widget.emptyBoxBuilder,
+            fillBoxCallback: (SlotDate slotDate, Timing timing) {
+              final startTime = timing.from;
+              final date = slotDate.date;
 
-            final slots = widget.slotInfo.slots[date] ?? [];
-            for (Slot s in slots) {
-              if (s.slotDate == date && s.startTime.contains(startTime)) {
-                return s;
+              final slots = widget.slotInfo.slots[date] ?? [];
+              for (Slot s in slots) {
+                if (s.slotDate == date && s.startTime.contains(startTime)) {
+                  return s;
+                }
               }
-            }
 
-            return null;
-          },
-          headerBuilder: (slotDate) {
-            final title = convertFormat(
-                time: slotDate.date,
-                newFormat: 'EEE',
-                oldFormat: API_DATE_FORMAT);
+              return null;
+            },
+            headerBuilder: (slotDate) {
+              final title = convertFormat(
+                  time: slotDate.date,
+                  newFormat: 'EEE',
+                  oldFormat: API_DATE_FORMAT);
 
-            final subtitle = convertFormat(
-                time: slotDate.date,
-                newFormat: 'dd',
-                oldFormat: API_DATE_FORMAT);
+              final subtitle = convertFormat(
+                  time: slotDate.date,
+                  newFormat: 'dd',
+                  oldFormat: API_DATE_FORMAT);
 
-            return HeaderItem(
-              title: title,
-              subtitle: subtitle,
-              onTap: () {
-                _selectDates(slotDate.date);
-              },
-            );
-          },
-          slotBuilder: (slot) {
-            return SlotItem(
-              availableColor: widget.availableColor,
-              availableTextColor: widget.availableTextColor,
-              bookedColor: widget.bookedColor,
-              bookedSelectedColor: widget.bookedSelectedColor,
-              bookedTextColor: widget.bookedTextColor,
-              notAvailableColor: widget.notAvailableColor,
-              notAvailableTextColor: widget.notAvailableTextColor,
-              partialBookedColor: widget.partialBookedColor,
-              partialBookedTextColor: widget.partialBookedTextColor,
-              selectedColor: widget.selectedColor,
-              selectedTextColor: widget.selectedTextColor,
-              isSlotSelected: isSelected(slot, slot.slotDate),
-              onSlotSelect: setSelection,
-              slot: slot,
-            );
-          },
-          timeBuilder: (time) {
-            final index = widget.slotInfo.timings.indexOf(time);
-            final itemCount = widget.slotInfo.timings.length;
+              return HeaderItem(
+                title: title,
+                subtitle: subtitle,
+                onTap: () {
+                  _selectDates(slotDate.date);
+                },
+              );
+            },
+            slotBuilder: (slot) {
+              return SlotItem(
+                availableColor: widget.availableColor,
+                availableTextColor: widget.availableTextColor,
+                bookedColor: widget.bookedColor,
+                bookedSelectedColor: widget.bookedSelectedColor,
+                bookedTextColor: widget.bookedTextColor,
+                notAvailableColor: widget.notAvailableColor,
+                notAvailableTextColor: widget.notAvailableTextColor,
+                partialBookedColor: widget.partialBookedColor,
+                partialBookedTextColor: widget.partialBookedTextColor,
+                selectedColor: widget.selectedColor,
+                selectedTextColor: widget.selectedTextColor,
+                isSlotSelected: isSelected(slot, slot.slotDate),
+                onSlotSelect: setSelection,
+                slot: slot,
+              );
+            },
+            timeBuilder: (time) {
+              final index = widget.slotInfo.timings.indexOf(time);
+              final itemCount = widget.slotInfo.timings.length;
 
-            final s = convertFormat(
-                time: time.from,
-                newFormat: DISPLAY_TIME,
-                oldFormat: SLOT_TIMING);
+              final s = convertFormat(
+                  time: time.from,
+                  newFormat: DISPLAY_TIME,
+                  oldFormat: SLOT_TIMING);
 
-            final e = convertFormat(
-                time: time.to, newFormat: DISPLAY_TIME, oldFormat: SLOT_TIMING);
+              final e = convertFormat(
+                  time: time.to, newFormat: DISPLAY_TIME, oldFormat: SLOT_TIMING);
 
-            final endDate = index == itemCount - 1 ||
-                (index + 1 < itemCount) &&
-                    time.to != widget.slotInfo.timings[index + 1].from;
+              final endDate = index == itemCount - 1 ||
+                  (index + 1 < itemCount) &&
+                      time.to != widget.slotInfo.timings[index + 1].from;
 
-            return TimeItem(
-              showEndTime: endDate,
-              startTime: s,
-              endTime: e,
-            );
-          },
+              return TimeItem(
+                showEndTime: endDate,
+                startTime: s,
+                endTime: e,
+              );
+            },
+          ),
         ),
       ),
     );

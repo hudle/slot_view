@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
 import 'package:hudle_slots_view/slot_builder/widget/empty_box.dart';
 
-import '../common/date_time_utils.dart';
 import '../matrix_builder/matrix_builder.dart';
-import '../model/slot_model/slot_model.dart' as sf;
-import '../widgets/date_item_widget.dart';
-import '../widgets/slot_item_widget.dart';
-import '../widgets/time_item_widget.dart';
 
 
 class SlotViewBuilder<H, T, S> extends StatefulWidget {
@@ -20,6 +14,8 @@ class SlotViewBuilder<H, T, S> extends StatefulWidget {
   final EmptyBoxBuilder? emptyBoxBuilder;
   final double slotHeight;
   final double slotWidth;
+  final double headerHeight;
+  final double timingWidth;
 
   const SlotViewBuilder({
     Key? key,
@@ -31,7 +27,9 @@ class SlotViewBuilder<H, T, S> extends StatefulWidget {
     required this.headerBuilder,
     this.emptyBoxBuilder,
     this.slotHeight = 100,
-    this.slotWidth = 100
+    this.slotWidth = 100,
+    this.headerHeight = 40,
+    this.timingWidth = 50
   }) : super(key: key);
 
   @override
@@ -47,6 +45,8 @@ class _SlotViewBuilderState<H, C, S> extends State<SlotViewBuilder<H,C,S>> {
         child: MatrixBuilder(
           cellWidth: widget.slotWidth,
           cellHeight: widget.slotHeight,
+          headerHeight: widget.headerHeight,
+          columnWidth: widget.timingWidth,
           cellBuilder: (_, int row, int column) {
             final timeData = widget.columns[column];
             final headerData = widget.headers[row];

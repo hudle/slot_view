@@ -10,11 +10,13 @@ import '../../common/gap_widget.dart';
 
 
 class HeaderItem extends StatelessWidget {
-  const HeaderItem({Key? key, required this.title, required this.subtitle, this.onTap})
+  const HeaderItem({Key? key, required this.title, required this.subtitle, this.onTap, this.textSize = 18, this.maxLines})
       : super(key: key);
 
   final String title;
   final String subtitle;
+  final double textSize;
+  final int? maxLines;
 
   final VoidCallback? onTap;
 
@@ -27,8 +29,11 @@ class HeaderItem extends StatelessWidget {
           NormalText(
             title,
             color: kSecondaryText,
-            fontSize: 18,
+            fontSize: textSize,
             fontWeight: FontWeight.bold,
+            overflow: TextOverflow.ellipsis,
+            maxLines: maxLines,
+
           ),
           VerticalGap(
             gap: 2,
