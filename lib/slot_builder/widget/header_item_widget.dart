@@ -33,6 +33,7 @@ class HeaderItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
             overflow: TextOverflow.ellipsis,
             maxLines: maxLines,
+            textAlign: TextAlign.center,
 
           ),
           VerticalGap(

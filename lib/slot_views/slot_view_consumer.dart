@@ -42,6 +42,8 @@ class ConsumerSlotView extends StatefulWidget {
   final bool hasPrev;
   final bool showLegend;
   final String? selectedDate;
+  final double headerHeight;
+  final double timeWidth;
 
 
   const ConsumerSlotView({
@@ -73,6 +75,8 @@ class ConsumerSlotView extends StatefulWidget {
     this.hasPrev = false,
     this.showLegend = true,
     this.selectedDate,
+    this.headerHeight = 40,
+    this.timeWidth = 70,
   }) : super(key: key);
 
   @override
@@ -112,8 +116,8 @@ class _ConsumerSlotViewState extends State<ConsumerSlotView> {
               slotWidth: widget.slotWidth,
               columns: widget.slotInfo.timings,
               headers: widget.slotInfo.dates,
-              timingWidth: 60,
-              headerHeight: widget.isDailyView ? 30 : 40,
+              timingWidth: widget.timeWidth,
+              headerHeight: widget.headerHeight,
               emptyBoxBuilder: widget.isDailyView ? () => Container(
                 height: MAX_BOX_SIZE,
                 width: MAX_BOX_SIZE,
