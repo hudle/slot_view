@@ -90,267 +90,265 @@ class _ConsumerSlotViewState extends State<ConsumerSlotView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Visibility(
-                visible: widget.showLegend,
-                child: LegendView(
-            data: [
-                LegendData(text: 'Booked', color: widget.bookedColor, borderColor: widget.bookedLegendBorderColor),
-                LegendData(text: 'Available', color: widget.availableColor, borderColor: widget.availableLegendBorderColor),
-                LegendData(text: 'Not Available', color: widget.notAvailableColor, borderColor: widget.notAvailableLegendBorderColor),
-                LegendData(text: 'Filling Fast', color: widget.partialBookedColor, borderColor: kColorAccent),
-            ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: SlotViewBuilder<SlotDate, Timing, Slot>(
-                slotHeight: widget.slotHeight,
-                slotWidth: widget.slotWidth,
-                columns: widget.slotInfo.timings,
-                headers: widget.slotInfo.dates,
-                timingWidth: 60,
-                headerHeight: widget.isDailyView ? 30 : 40,
-                emptyBoxBuilder: widget.isDailyView ? () => Container(
-                  height: MAX_BOX_SIZE,
-                  width: MAX_BOX_SIZE,
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ) : widget.emptyBoxBuilder,
-                fillBoxCallback: (SlotDate slotDate, Timing timing) {
-                  final startTime = timing.from;
-                  final date = slotDate.date;
-
-                  final slots = widget.slotInfo.slots[date] ?? [];
-                  for (Slot s in slots) {
-                    if (s.slotDate == date && s.startTime.contains(startTime)) {
-                      return s;
-                    }
-                  }
-
-                  return null;
-                },
-                headerBuilder: (slotDate) {
-                  if (widget.isDailyView) {
-                     return HeaderItem(
-                       textSize: 14,
-                      maxLines: 2,
-                      title: slotDate.date,
-                      subtitle: '',
-                      onTap: () {
-                        _selectDates(slotDate.date);
-                      },
-                    );
-                  }
-
-                  final title = convertFormat(
-                      time: slotDate.date,
-                      newFormat: 'EEE',
-                      oldFormat: API_DATE_FORMAT);
-
-                  final subtitle = convertFormat(
-                      time: slotDate.date,
-                      newFormat: 'dd',
-                      oldFormat: API_DATE_FORMAT);
-
-                  return HeaderItem(
-                    title: title,
-                    subtitle: subtitle,
-                    onTap: null,
-                  );
-                },
-                slotBuilder: (slot) {
-
-                   Function(Slot slot, String date)? onSelect;
-                     GlobalKey<FlipCardState> _cardKey = GlobalKey<FlipCardState>();
-                     const counterSize = 18.0;
-
-                  final slotItem =
-                  InkWell(
-                    onLongPress: () {
-                      _cardKey.currentState?.toggleCard();
-                    },
-                    child: SlotItem(
-                      availableColor: widget.availableColor,
-                      availableTextColor: widget.availableTextColor,
-                      bookedColor: widget.bookedColor,
-                      bookedSelectedColor: widget.bookedSelectedColor,
-                      bookedTextColor: widget.bookedTextColor,
-                      notAvailableColor: widget.notAvailableColor,
-                      notAvailableTextColor: widget.notAvailableTextColor,
-                      partialBookedColor: widget.partialBookedColor,
-                      partialBookedTextColor: widget.partialBookedTextColor,
-                      selectedColor: widget.selectedColor,
-                      selectedTextColor: widget.selectedTextColor,
-                      isSlotSelected: isSelected(slot, slot.slotDate),
-                      onSlotSelect: (slot, date) {
-                        // if (widget.enableMultiSlot) {
-                        //   onSelect?.call(slot, date);
-                        // }
-                        // else {
-                        //   setSelection(slot, date);
-                        // }
-                        setSelection(slot, date);
-                      },
-                      slot: slot,
-                    ),
-                  );
-
-                  // if (widget.enableMultiSlot){
-                  //   GlobalKey<FlipCardState> _cardKey = GlobalKey<FlipCardState>();
-                  //
-                  //   onSelect = (slot, date) {
-                  //     _cardKey.currentState?.toggleCard();
-                  //   };
-                  //
-                  //   final counterSize = 18.0;
-                  //
-                  //   return FlipCard(
-                  //       key: _cardKey,
-                  //       front: slotItem,
-                  //       back: Container(
-                  //         decoration: BoxDecoration(
-                  //           color: kColorLegendSelected,
-                  //           borderRadius: BorderRadius.circular(5),
-                  //         ),
-                  //         margin: const EdgeInsets.all(4),
-                  //         child: Column(
-                  //           crossAxisAlignment: CrossAxisAlignment.center,
-                  //           mainAxisAlignment: MainAxisAlignment.center,
-                  //           children: [
-                  //             NormalText(
-                  //               getDisplayNumber(slot.price,
-                  //                   compact: false, isBooking: false, showSymbol: true),
-                  //               fontSize: 14,
-                  //               color: widget.selectedTextColor,
-                  //               fontWeight: FontWeight.w500,
-                  //             ),
-                  //             VerticalGap(gap: 8,),
-                  //             Row(
-                  //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //               children: [
-                  //                 Container(
-                  //                   height: counterSize,
-                  //                   width: counterSize,
-                  //                   decoration: BoxDecoration(
-                  //                     color: kColorAccent,
-                  //                     shape: BoxShape.circle,
-                  //                   ),
-                  //                   child: Center(child: Text("+", style: TextStyle(color: kColorWhite, fontSize: 18),)),
-                  //                 ),
-                  //                 Text("1", style: TextStyle(color: widget.selectedTextColor, fontSize: 14),),
-                  //                 Container(
-                  //                   height: counterSize,
-                  //                   width: counterSize,
-                  //                   decoration: BoxDecoration(
-                  //                     color: kColorAccent,
-                  //                     shape: BoxShape.circle,
-                  //                   ),
-                  //                   child: Center(child: Text("-", style: TextStyle(color: kColorWhite, fontSize: 18),)),
-                  //                 )
-                  //               ],
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       )
-                  //   );
-                  // }
-
-                 // return slotItem;
-
-                   return FlipCard(
-                       key: _cardKey,
-                       front: slotItem,
-                       back: Container(
-                         decoration: BoxDecoration(
-                           color: kColorLegendSelected,
-                           borderRadius: BorderRadius.circular(5),
-                         ),
-                         margin: const EdgeInsets.all(4),
-                         child: Column(
-                           crossAxisAlignment: CrossAxisAlignment.center,
-                           mainAxisAlignment: MainAxisAlignment.center,
-                           children: [
-                             NormalText(
-                               getDisplayNumber(slot.price,
-                                   compact: false, isBooking: false, showSymbol: true),
-                               fontSize: 14,
-                               color: widget.selectedTextColor,
-                               fontWeight: FontWeight.w500,
-                             ),
-                             VerticalGap(gap: 8,),
-                             Row(
-                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                               children: [
-                                 Container(
-                                   height: counterSize,
-                                   width: counterSize,
-                                   decoration: BoxDecoration(
-                                     color: kColorAccent,
-                                     shape: BoxShape.circle,
-                                   ),
-                                   child: Center(child: Text("+", style: TextStyle(color: kColorWhite, fontSize: 18),)),
-                                 ),
-                                 Text("1", style: TextStyle(color: widget.selectedTextColor, fontSize: 14),),
-                                 Container(
-                                   height: counterSize,
-                                   width: counterSize,
-                                   decoration: BoxDecoration(
-                                     color: kColorAccent,
-                                     shape: BoxShape.circle,
-                                   ),
-                                   child: Center(child: Text("-", style: TextStyle(color: kColorWhite, fontSize: 18),)),
-                                 )
-                               ],
-                             ),
-                           ],
-                         ),
-                       )
-                   );
-                },
-                timeBuilder: (time) {
-                  final index = widget.slotInfo.timings.indexOf(time);
-                  final itemCount = widget.slotInfo.timings.length;
-
-                  final s = convertFormat(
-                      time: time.from,
-                      newFormat: DISPLAY_TIME,
-                      oldFormat: SLOT_TIMING);
-
-                  final e = convertFormat(
-                      time: time.to, newFormat: DISPLAY_TIME, oldFormat: SLOT_TIMING);
-
-                  final endDate = index == itemCount - 1 ||
-                      (index + 1 < itemCount) &&
-                          time.to != widget.slotInfo.timings[index + 1].from;
-
-                  bool isEve = isEvening(time.from);
-                  return TimeItem(
-                    showEndTime: endDate,
-                    startTime: s,
-                    endTime: e,
-                    icon: isEve ? SvgPicture.network('https://hudle.in/icons/moon.svg') : SvgPicture.network('https://hudle.in/icons/sun.svg')
-                    //Image.network('https://hudle.in/icons/sun.svg'),
-                  );
-                },
-              ),
-            ),
-            Container(
-              color: kColorGrey200,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(onPressed: widget.onPrevious, child: Text("Prev")),
-                  Text(widget.selectedDate ?? ''),
-                  TextButton(onPressed: widget.onNext, child: Text("Next"))
-                ],
-              ),
-            )
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Visibility(
+              visible: widget.showLegend,
+              child: LegendView(
+          data: [
+              LegendData(text: 'Booked', color: widget.bookedColor, borderColor: widget.bookedLegendBorderColor),
+              LegendData(text: 'Available', color: widget.availableColor, borderColor: widget.availableLegendBorderColor),
+              LegendData(text: 'Not Available', color: widget.notAvailableColor, borderColor: widget.notAvailableLegendBorderColor),
+              LegendData(text: 'Filling Fast', color: widget.partialBookedColor, borderColor: kColorAccent),
           ],
-        ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: SlotViewBuilder<SlotDate, Timing, Slot>(
+              slotHeight: widget.slotHeight,
+              slotWidth: widget.slotWidth,
+              columns: widget.slotInfo.timings,
+              headers: widget.slotInfo.dates,
+              timingWidth: 60,
+              headerHeight: widget.isDailyView ? 30 : 40,
+              emptyBoxBuilder: widget.isDailyView ? () => Container(
+                height: MAX_BOX_SIZE,
+                width: MAX_BOX_SIZE,
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ) : widget.emptyBoxBuilder,
+              fillBoxCallback: (SlotDate slotDate, Timing timing) {
+                final startTime = timing.from;
+                final date = slotDate.date;
+
+                final slots = widget.slotInfo.slots[date] ?? [];
+                for (Slot s in slots) {
+                  if (s.slotDate == date && s.startTime.contains(startTime)) {
+                    return s;
+                  }
+                }
+
+                return null;
+              },
+              headerBuilder: (slotDate) {
+                if (widget.isDailyView) {
+                   return HeaderItem(
+                     textSize: 14,
+                    maxLines: 2,
+                    title: slotDate.date,
+                    subtitle: '',
+                    onTap: () {
+                      _selectDates(slotDate.date);
+                    },
+                  );
+                }
+
+                final title = convertFormat(
+                    time: slotDate.date,
+                    newFormat: 'EEE',
+                    oldFormat: API_DATE_FORMAT);
+
+                final subtitle = convertFormat(
+                    time: slotDate.date,
+                    newFormat: 'dd',
+                    oldFormat: API_DATE_FORMAT);
+
+                return HeaderItem(
+                  title: title,
+                  subtitle: subtitle,
+                  onTap: null,
+                );
+              },
+              slotBuilder: (slot) {
+
+                 Function(Slot slot, String date)? onSelect;
+                   GlobalKey<FlipCardState> _cardKey = GlobalKey<FlipCardState>();
+                   const counterSize = 18.0;
+
+                final slotItem =
+                InkWell(
+                  onLongPress: () {
+                    _cardKey.currentState?.toggleCard();
+                  },
+                  child: SlotItem(
+                    availableColor: widget.availableColor,
+                    availableTextColor: widget.availableTextColor,
+                    bookedColor: widget.bookedColor,
+                    bookedSelectedColor: widget.bookedSelectedColor,
+                    bookedTextColor: widget.bookedTextColor,
+                    notAvailableColor: widget.notAvailableColor,
+                    notAvailableTextColor: widget.notAvailableTextColor,
+                    partialBookedColor: widget.partialBookedColor,
+                    partialBookedTextColor: widget.partialBookedTextColor,
+                    selectedColor: widget.selectedColor,
+                    selectedTextColor: widget.selectedTextColor,
+                    isSlotSelected: isSelected(slot, slot.slotDate),
+                    onSlotSelect: (slot, date) {
+                      // if (widget.enableMultiSlot) {
+                      //   onSelect?.call(slot, date);
+                      // }
+                      // else {
+                      //   setSelection(slot, date);
+                      // }
+                      setSelection(slot, date);
+                    },
+                    slot: slot,
+                  ),
+                );
+
+                // if (widget.enableMultiSlot){
+                //   GlobalKey<FlipCardState> _cardKey = GlobalKey<FlipCardState>();
+                //
+                //   onSelect = (slot, date) {
+                //     _cardKey.currentState?.toggleCard();
+                //   };
+                //
+                //   final counterSize = 18.0;
+                //
+                //   return FlipCard(
+                //       key: _cardKey,
+                //       front: slotItem,
+                //       back: Container(
+                //         decoration: BoxDecoration(
+                //           color: kColorLegendSelected,
+                //           borderRadius: BorderRadius.circular(5),
+                //         ),
+                //         margin: const EdgeInsets.all(4),
+                //         child: Column(
+                //           crossAxisAlignment: CrossAxisAlignment.center,
+                //           mainAxisAlignment: MainAxisAlignment.center,
+                //           children: [
+                //             NormalText(
+                //               getDisplayNumber(slot.price,
+                //                   compact: false, isBooking: false, showSymbol: true),
+                //               fontSize: 14,
+                //               color: widget.selectedTextColor,
+                //               fontWeight: FontWeight.w500,
+                //             ),
+                //             VerticalGap(gap: 8,),
+                //             Row(
+                //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //               children: [
+                //                 Container(
+                //                   height: counterSize,
+                //                   width: counterSize,
+                //                   decoration: BoxDecoration(
+                //                     color: kColorAccent,
+                //                     shape: BoxShape.circle,
+                //                   ),
+                //                   child: Center(child: Text("+", style: TextStyle(color: kColorWhite, fontSize: 18),)),
+                //                 ),
+                //                 Text("1", style: TextStyle(color: widget.selectedTextColor, fontSize: 14),),
+                //                 Container(
+                //                   height: counterSize,
+                //                   width: counterSize,
+                //                   decoration: BoxDecoration(
+                //                     color: kColorAccent,
+                //                     shape: BoxShape.circle,
+                //                   ),
+                //                   child: Center(child: Text("-", style: TextStyle(color: kColorWhite, fontSize: 18),)),
+                //                 )
+                //               ],
+                //             ),
+                //           ],
+                //         ),
+                //       )
+                //   );
+                // }
+
+               // return slotItem;
+
+                 return FlipCard(
+                     key: _cardKey,
+                     front: slotItem,
+                     back: Container(
+                       decoration: BoxDecoration(
+                         color: kColorLegendSelected,
+                         borderRadius: BorderRadius.circular(5),
+                       ),
+                       margin: const EdgeInsets.all(4),
+                       child: Column(
+                         crossAxisAlignment: CrossAxisAlignment.center,
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           NormalText(
+                             getDisplayNumber(slot.price,
+                                 compact: false, isBooking: false, showSymbol: true),
+                             fontSize: 14,
+                             color: widget.selectedTextColor,
+                             fontWeight: FontWeight.w500,
+                           ),
+                           VerticalGap(gap: 8,),
+                           Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceAround,
+                             children: [
+                               Container(
+                                 height: counterSize,
+                                 width: counterSize,
+                                 decoration: BoxDecoration(
+                                   color: kColorAccent,
+                                   shape: BoxShape.circle,
+                                 ),
+                                 child: Center(child: Text("+", style: TextStyle(color: kColorWhite, fontSize: 18),)),
+                               ),
+                               Text("1", style: TextStyle(color: widget.selectedTextColor, fontSize: 14),),
+                               Container(
+                                 height: counterSize,
+                                 width: counterSize,
+                                 decoration: BoxDecoration(
+                                   color: kColorAccent,
+                                   shape: BoxShape.circle,
+                                 ),
+                                 child: Center(child: Text("-", style: TextStyle(color: kColorWhite, fontSize: 18),)),
+                               )
+                             ],
+                           ),
+                         ],
+                       ),
+                     )
+                 );
+              },
+              timeBuilder: (time) {
+                final index = widget.slotInfo.timings.indexOf(time);
+                final itemCount = widget.slotInfo.timings.length;
+
+                final s = convertFormat(
+                    time: time.from,
+                    newFormat: DISPLAY_TIME,
+                    oldFormat: SLOT_TIMING);
+
+                final e = convertFormat(
+                    time: time.to, newFormat: DISPLAY_TIME, oldFormat: SLOT_TIMING);
+
+                final endDate = index == itemCount - 1 ||
+                    (index + 1 < itemCount) &&
+                        time.to != widget.slotInfo.timings[index + 1].from;
+
+                bool isEve = isEvening(time.from);
+                return TimeItem(
+                  showEndTime: endDate,
+                  startTime: s,
+                  endTime: e,
+                  icon: isEve ? SvgPicture.network('https://hudle.in/icons/moon.svg') : SvgPicture.network('https://hudle.in/icons/sun.svg')
+                  //Image.network('https://hudle.in/icons/sun.svg'),
+                );
+              },
+            ),
+          ),
+          Container(
+            color: kColorGrey200,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(onPressed: widget.onPrevious, child: Text("Prev")),
+                Text(widget.selectedDate ?? ''),
+                TextButton(onPressed: widget.onNext, child: Text("Next"))
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
