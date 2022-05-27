@@ -17,12 +17,12 @@ dependencies:
   hudle_theme:
     git:
       url: https://github.com/hudle/hudle_theme
-      ref: 9e1abcb95df1613a7aabe2517351a83a0d262117
+      ref: new_theme
 
   hudle_core:
     git:
       url: https://github.com/hudle/hudle_core
-      ref: git_updated
+      ref: updated_core
   intl: ^0.17.0
   get: ^4.6.1
   json_serializable: ^4.0.2

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hudle_core/hudle_core.dart';
+import 'package:hudle_slots_view/common/gap_widget.dart';
 import 'package:hudle_slots_view/common/legend_view.dart';
 import 'package:hudle_slots_view/model/slot_model/slot_model.dart';
+import 'package:hudle_slots_view/slot_builder/flip_card/filp_card.dart';
 import 'package:hudle_slots_view/slot_builder/slot_view_builder.dart';
 import 'package:hudle_slots_view/slot_builder/widget/header_item_widget.dart';
 import 'package:hudle_slots_view/widgets/slot_item_widget.dart';
@@ -9,6 +12,7 @@ import 'package:hudle_slots_view/widgets/time_item_widget.dart';
 import 'package:hudle_theme/hudle_theme.dart';
 
 import '../common/date_time_utils.dart';
+import '../common/utils.dart';
 
 class ConsumerSlotView extends StatefulWidget {
   final SlotInfo slotInfo;
@@ -159,22 +163,153 @@ class _ConsumerSlotViewState extends State<ConsumerSlotView> {
                   );
                 },
                 slotBuilder: (slot) {
-                  return SlotItem(
-                    availableColor: widget.availableColor,
-                    availableTextColor: widget.availableTextColor,
-                    bookedColor: widget.bookedColor,
-                    bookedSelectedColor: widget.bookedSelectedColor,
-                    bookedTextColor: widget.bookedTextColor,
-                    notAvailableColor: widget.notAvailableColor,
-                    notAvailableTextColor: widget.notAvailableTextColor,
-                    partialBookedColor: widget.partialBookedColor,
-                    partialBookedTextColor: widget.partialBookedTextColor,
-                    selectedColor: widget.selectedColor,
-                    selectedTextColor: widget.selectedTextColor,
-                    isSlotSelected: isSelected(slot, slot.slotDate),
-                    onSlotSelect: setSelection,
-                    slot: slot,
+
+                   Function(Slot slot, String date)? onSelect;
+                     GlobalKey<FlipCardState> _cardKey = GlobalKey<FlipCardState>();
+                     const counterSize = 18.0;
+
+                  final slotItem =
+                  InkWell(
+                    onLongPress: () {
+                      _cardKey.currentState?.toggleCard();
+                    },
+                    child: SlotItem(
+                      availableColor: widget.availableColor,
+                      availableTextColor: widget.availableTextColor,
+                      bookedColor: widget.bookedColor,
+                      bookedSelectedColor: widget.bookedSelectedColor,
+                      bookedTextColor: widget.bookedTextColor,
+                      notAvailableColor: widget.notAvailableColor,
+                      notAvailableTextColor: widget.notAvailableTextColor,
+                      partialBookedColor: widget.partialBookedColor,
+                      partialBookedTextColor: widget.partialBookedTextColor,
+                      selectedColor: widget.selectedColor,
+                      selectedTextColor: widget.selectedTextColor,
+                      isSlotSelected: isSelected(slot, slot.slotDate),
+                      onSlotSelect: (slot, date) {
+                        // if (widget.enableMultiSlot) {
+                        //   onSelect?.call(slot, date);
+                        // }
+                        // else {
+                        //   setSelection(slot, date);
+                        // }
+                        setSelection(slot, date);
+                      },
+                      slot: slot,
+                    ),
                   );
+
+                  // if (widget.enableMultiSlot){
+                  //   GlobalKey<FlipCardState> _cardKey = GlobalKey<FlipCardState>();
+                  //
+                  //   onSelect = (slot, date) {
+                  //     _cardKey.currentState?.toggleCard();
+                  //   };
+                  //
+                  //   final counterSize = 18.0;
+                  //
+                  //   return FlipCard(
+                  //       key: _cardKey,
+                  //       front: slotItem,
+                  //       back: Container(
+                  //         decoration: BoxDecoration(
+                  //           color: kColorLegendSelected,
+                  //           borderRadius: BorderRadius.circular(5),
+                  //         ),
+                  //         margin: const EdgeInsets.all(4),
+                  //         child: Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.center,
+                  //           mainAxisAlignment: MainAxisAlignment.center,
+                  //           children: [
+                  //             NormalText(
+                  //               getDisplayNumber(slot.price,
+                  //                   compact: false, isBooking: false, showSymbol: true),
+                  //               fontSize: 14,
+                  //               color: widget.selectedTextColor,
+                  //               fontWeight: FontWeight.w500,
+                  //             ),
+                  //             VerticalGap(gap: 8,),
+                  //             Row(
+                  //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //               children: [
+                  //                 Container(
+                  //                   height: counterSize,
+                  //                   width: counterSize,
+                  //                   decoration: BoxDecoration(
+                  //                     color: kColorAccent,
+                  //                     shape: BoxShape.circle,
+                  //                   ),
+                  //                   child: Center(child: Text("+", style: TextStyle(color: kColorWhite, fontSize: 18),)),
+                  //                 ),
+                  //                 Text("1", style: TextStyle(color: widget.selectedTextColor, fontSize: 14),),
+                  //                 Container(
+                  //                   height: counterSize,
+                  //                   width: counterSize,
+                  //                   decoration: BoxDecoration(
+                  //                     color: kColorAccent,
+                  //                     shape: BoxShape.circle,
+                  //                   ),
+                  //                   child: Center(child: Text("-", style: TextStyle(color: kColorWhite, fontSize: 18),)),
+                  //                 )
+                  //               ],
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       )
+                  //   );
+                  // }
+
+                 // return slotItem;
+
+                   return FlipCard(
+                       key: _cardKey,
+                       front: slotItem,
+                       back: Container(
+                         decoration: BoxDecoration(
+                           color: kColorLegendSelected,
+                           borderRadius: BorderRadius.circular(5),
+                         ),
+                         margin: const EdgeInsets.all(4),
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           children: [
+                             NormalText(
+                               getDisplayNumber(slot.price,
+                                   compact: false, isBooking: false, showSymbol: true),
+                               fontSize: 14,
+                               color: widget.selectedTextColor,
+                               fontWeight: FontWeight.w500,
+                             ),
+                             VerticalGap(gap: 8,),
+                             Row(
+                               mainAxisAlignment: MainAxisAlignment.spaceAround,
+                               children: [
+                                 Container(
+                                   height: counterSize,
+                                   width: counterSize,
+                                   decoration: BoxDecoration(
+                                     color: kColorAccent,
+                                     shape: BoxShape.circle,
+                                   ),
+                                   child: Center(child: Text("+", style: TextStyle(color: kColorWhite, fontSize: 18),)),
+                                 ),
+                                 Text("1", style: TextStyle(color: widget.selectedTextColor, fontSize: 14),),
+                                 Container(
+                                   height: counterSize,
+                                   width: counterSize,
+                                   decoration: BoxDecoration(
+                                     color: kColorAccent,
+                                     shape: BoxShape.circle,
+                                   ),
+                                   child: Center(child: Text("-", style: TextStyle(color: kColorWhite, fontSize: 18),)),
+                                 )
+                               ],
+                             ),
+                           ],
+                         ),
+                       )
+                   );
                 },
                 timeBuilder: (time) {
                   final index = widget.slotInfo.timings.indexOf(time);
