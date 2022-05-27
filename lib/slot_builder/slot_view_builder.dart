@@ -41,36 +41,34 @@ class _SlotViewBuilderState<H, C, S> extends State<SlotViewBuilder<H,C,S>> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: MatrixBuilder(
-          cellWidth: widget.slotWidth,
-          cellHeight: widget.slotHeight,
-          headerHeight: widget.headerHeight,
-          columnWidth: widget.timingWidth,
-          cellBuilder: (_, int row, int column) {
-            final timeData = widget.columns[column];
-            final headerData = widget.headers[row];
-            S? slot = widget.fillBoxCallback(headerData, timeData);
-            if (slot != null) {
-              return widget.slotBuilder(slot);
-            }
-            else {
-              return widget.emptyBoxBuilder?.call() ?? const EmptyBox();
-            }
+      body: MatrixBuilder(
+        cellWidth: widget.slotWidth,
+        cellHeight: widget.slotHeight,
+        headerHeight: widget.headerHeight,
+        columnWidth: widget.timingWidth,
+        cellBuilder: (_, int row, int column) {
+          final timeData = widget.columns[column];
+          final headerData = widget.headers[row];
+          S? slot = widget.fillBoxCallback(headerData, timeData);
+          if (slot != null) {
+            return widget.slotBuilder(slot);
+          }
+          else {
+            return widget.emptyBoxBuilder?.call() ?? const EmptyBox();
+          }
 
-          },
-          columnBuilder: (_, int column) {
-            final timeData = widget.columns[column];
-            return widget.timeBuilder(timeData);
+        },
+        columnBuilder: (_, int column) {
+          final timeData = widget.columns[column];
+          return widget.timeBuilder(timeData);
 
-          },
-          headBuilder: (_, int row) {
-            final headerData = widget.headers[row];
-            return widget.headerBuilder(headerData);
-          },
-          columnCount: widget.columns.length,
-          rowCount: widget.headers.length,
-        ),
+        },
+        headBuilder: (_, int row) {
+          final headerData = widget.headers[row];
+          return widget.headerBuilder(headerData);
+        },
+        columnCount: widget.columns.length,
+        rowCount: widget.headers.length,
       ),
     );
   }
